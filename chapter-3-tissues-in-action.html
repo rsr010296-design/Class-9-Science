@@ -1,0 +1,594 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tissues in Action</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Mulish:wght@400;600;700;800&display=swap">
+<style>
+/* Layout: "microscope slide" bands — each section is a slide strip; plant half in greens, animal half in rose/coral, sticky chapter nav on top */
+:root{
+  --bg:#f8faf6; --surface:#ffffff; --fg:#1f2a26; --muted:#56655f; --line:#dfe6e0;
+  --leaf:#2b8a4b; --leaf-soft:#e0f2e5;
+  --rose:#c8406a; --rose-soft:#fbe3ea;
+  --amber:#d38a0c; --amber-soft:#fcf0d4;
+  --sky:#1c78b8; --sky-soft:#dcecf8;
+  --violet:#6b4fc6; --violet-soft:#ebe6fb;
+  --coral:#d9622b; --coral-soft:#fbe6da;
+  --good:#2b8a4b; --bad:#c9372c;
+  --display:"Baloo 2","Trebuchet MS",system-ui,sans-serif;
+  --body:"Mulish",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#141a18; --surface:#1d2522; --fg:#ecf2ee; --muted:#a3b2ab; --line:#33403b;
+  --leaf:#6fd08e; --leaf-soft:#1f3628; --rose:#f483a6; --rose-soft:#3d1f2a;
+  --amber:#f2bd45; --amber-soft:#3a2f14; --sky:#6cbcf0; --sky-soft:#17304a;
+  --violet:#a994f5; --violet-soft:#2a2448; --coral:#f6976a; --coral-soft:#3c2519;
+  --good:#6fd08e; --bad:#ff7a6e; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141a18; --surface:#1d2522; --fg:#ecf2ee; --muted:#a3b2ab; --line:#33403b;
+  --leaf:#6fd08e; --leaf-soft:#1f3628; --rose:#f483a6; --rose-soft:#3d1f2a;
+  --amber:#f2bd45; --amber-soft:#3a2f14; --sky:#6cbcf0; --sky-soft:#17304a;
+  --violet:#a994f5; --violet-soft:#2a2448; --coral:#f6976a; --coral-soft:#3c2519;
+  --good:#6fd08e; --bad:#ff7a6e; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.6}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--display);line-height:1.15;text-wrap:balance;margin:0}
+h2{font-size:clamp(1.8rem,4vw,2.5rem);font-weight:800}
+h3{font-size:1.3rem;font-weight:700}
+p{margin:0}
+.lead{font-size:1.08rem;color:var(--muted);max-width:65ch}
+.kw{background:var(--amber-soft);color:var(--fg);padding:0 .3em;border-radius:4px;font-weight:800}
+
+.hero{background:linear-gradient(180deg,var(--leaf-soft),var(--bg));padding-block:36px 8px;overflow:hidden}
+.hero-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:24px;align-items:center}
+.chip{display:inline-block;font-size:.78rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--rose);background:var(--rose-soft);padding:4px 12px;border-radius:99px}
+.hero h1{font-size:clamp(2.4rem,6.5vw,4rem);font-weight:800;margin-block:10px 12px}
+.hero h1 span{color:var(--leaf)} .hero h1 em{font-style:normal;color:var(--rose)}
+.hero svg{width:100%;height:auto}
+
+nav.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);border-bottom:2px solid var(--line)}
+nav.top .wrap{display:flex;gap:6px;overflow-x:auto;padding-block:8px;scrollbar-width:none}
+nav.top a{flex:none;text-decoration:none;color:var(--fg);font-weight:800;font-size:.9rem;padding:6px 12px;border-radius:99px;border:2px solid transparent}
+nav.top a:hover,nav.top a.on{border-color:var(--leaf);color:var(--leaf)}
+
+section{padding-block:44px;border-bottom:2px dashed var(--line)}
+.part{padding-block:18px;color:#fff;font-family:var(--display);font-weight:800;font-size:1.4rem}
+.part.plant{background:var(--leaf)} .part.animal{background:var(--rose)}
+.sec-head{display:flex;gap:14px;align-items:flex-start;margin-bottom:22px}
+.badge{flex:none;min-width:54px;height:54px;padding:0 8px;border-radius:16px;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:1.05rem;color:#fff}
+.sec-head p{margin-top:6px}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.card{background:var(--surface);border:2px solid var(--line);border-radius:18px;padding:18px;min-width:0}
+.card h3{margin-bottom:6px}
+.c-leaf{border-color:var(--leaf);background:var(--leaf-soft)}
+.c-amber{border-color:var(--amber);background:var(--amber-soft)}
+.c-rose{border-color:var(--rose);background:var(--rose-soft)}
+.c-sky{border-color:var(--sky);background:var(--sky-soft)}
+.c-violet{border-color:var(--violet);background:var(--violet-soft)}
+.c-coral{border-color:var(--coral);background:var(--coral-soft)}
+.card ul{margin:6px 0 0;padding-left:1.2em}
+.card li{margin-bottom:4px}
+.tag{display:inline-block;font-size:.75rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.remember{margin-top:18px;border-left:6px solid var(--violet);background:var(--violet-soft);border-radius:0 14px 14px 0;padding:12px 16px}
+.remember b{color:var(--violet)}
+.sci{margin-top:18px;border:2px dashed var(--sky);border-radius:14px;padding:12px 16px}
+.sci b{color:var(--sky)}
+
+button{font:inherit;cursor:pointer}
+.btn{border:2px solid var(--fg);background:var(--surface);color:var(--fg);font-weight:800;border-radius:12px;padding:8px 14px}
+.btn.primary{background:var(--leaf);border-color:var(--leaf);color:#fff}
+:focus-visible{outline:3px solid var(--sky);outline-offset:2px}
+.seg{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.seg button{border:2px solid var(--line);background:var(--surface);color:var(--fg);font-weight:800;border-radius:99px;padding:6px 14px}
+.seg button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+
+/* hierarchy ladder */
+.ladder{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.ladder button{border:2px solid var(--line);background:var(--surface);color:var(--fg);border-radius:14px;padding:10px 14px;font-weight:800;font-family:var(--display);font-size:1.1rem}
+.ladder button[aria-pressed="true"]{border-color:var(--leaf);background:var(--leaf-soft)}
+.ladder .arr{font-weight:800;color:var(--muted)}
+.info{margin-top:12px;min-height:3.2em;padding:12px 14px;border-radius:12px;background:var(--surface);border:2px dashed var(--line);font-weight:600}
+
+.diagram svg{width:100%;height:auto;display:block}
+.hot{cursor:pointer}
+.hot:focus-visible{outline:none}
+.hot:focus-visible *{stroke:var(--sky);stroke-width:4}
+.pick{display:grid;gap:8px}
+.pick button{display:flex;gap:10px;align-items:center;border:2px solid var(--line);background:var(--surface);color:var(--fg);border-radius:12px;padding:8px 12px;text-align:left;font-weight:700}
+.pick button[aria-pressed="true"]{border-color:var(--fg)}
+.dot{display:inline-block;width:14px;height:14px;border-radius:4px;flex:none;vertical-align:-2px;margin-right:5px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.9rem;font-weight:700;color:var(--muted)}
+
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font-family:var(--display);font-size:1rem;background:var(--leaf-soft)}
+.animal-t th{background:var(--rose-soft)}
+.cellpic{width:100%;max-width:140px;height:auto;display:block;margin-bottom:6px}
+
+.chart svg{width:100%;height:auto;display:block}
+
+.stackbar{display:flex;height:44px;border-radius:12px;overflow:hidden;font-weight:800;margin-block:10px}
+.stackbar div{display:grid;place-items:center;color:#fff;font-size:.9rem}
+
+.flips{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.flip{perspective:900px;height:180px;border:0;background:none;padding:0;color:var(--fg);text-align:left}
+.flip .in{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+.flip.open .in{transform:rotateY(180deg)}
+.flip .f,.flip .b{position:absolute;inset:0;backface-visibility:hidden;border-radius:16px;padding:14px;display:flex;flex-direction:column;justify-content:center;border:2px solid var(--line)}
+.flip .f{background:var(--surface)}
+.flip .f b{font-family:var(--display);font-size:1.25rem;line-height:1.1}
+.flip .f small{color:var(--muted);font-weight:700;margin-top:6px}
+.flip .b{transform:rotateY(180deg);background:var(--rose-soft);border-color:var(--rose);font-size:.92rem;font-weight:600;overflow:auto}
+.flips.plantf .flip .b{background:var(--leaf-soft);border-color:var(--leaf)}
+.search{width:100%;max-width:420px;font:inherit;padding:10px 14px;border-radius:12px;border:2px solid var(--line);background:var(--surface);color:var(--fg);margin-bottom:16px}
+
+.quiz{max-width:720px}
+.qprog{height:10px;background:var(--line);border-radius:99px;overflow:hidden;margin-bottom:14px}
+.qprog div{height:100%;background:var(--leaf);transition:width .3s}
+.opts{display:grid;gap:8px;margin-top:12px}
+.opt{border:2px solid var(--line);background:var(--surface);color:var(--fg);text-align:left;border-radius:12px;padding:10px 14px;font-weight:700}
+.opt:hover:not(:disabled){border-color:var(--sky)}
+.opt.ok{border-color:var(--good);background:var(--leaf-soft)}
+.opt.no{border-color:var(--bad);background:var(--rose-soft)}
+.why{margin-top:12px;font-weight:600}
+.qfoot{display:flex;justify-content:space-between;align-items:center;margin-top:14px;gap:10px;flex-wrap:wrap}
+
+details{background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:12px 16px;margin-bottom:10px}
+summary{font-weight:800;cursor:pointer}
+details p,details ul{margin-top:8px}
+
+.steps{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;counter-reset:s}
+.steps div{background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:12px;font-weight:700;font-size:.92rem;min-width:0}
+.steps div::before{counter-increment:s;content:"Step " counter(s);display:block;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--leaf);font-weight:800}
+
+@media (max-width:760px){.hero-grid,.g2,.g3,.g4,.steps{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+<style>html,body{margin:0}</style>
+</head>
+<body>
+
+
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="chip">Class 9 Science · Chapter 3 · Exploration</span>
+      <h1><span>Tissues</span> in <em>Action</em></h1>
+      <p class="lead">A <b>tissue</b> is a group of cells, similar in structure, that work together to do a specific job. Tissues give us <b>division of labour</b>, which makes the body efficient.</p>
+    </div>
+    <svg viewBox="0 0 400 260" role="img" aria-label="Plant cells on the left and a neuron on the right">
+      <g stroke="var(--leaf)" stroke-width="3" fill="var(--leaf-soft)">
+        <rect x="20" y="40" width="60" height="50" rx="6"/><rect x="80" y="40" width="60" height="50" rx="6"/><rect x="20" y="90" width="60" height="50" rx="6"/><rect x="80" y="90" width="60" height="50" rx="6"/><rect x="20" y="140" width="60" height="50" rx="6"/><rect x="80" y="140" width="60" height="50" rx="6"/>
+      </g>
+      <g fill="var(--leaf)"><circle cx="40" cy="60" r="7"/><circle cx="118" cy="70" r="7"/><circle cx="55" cy="118" r="7"/><circle cx="104" cy="108" r="7"/><circle cx="44" cy="170" r="7"/><circle cx="112" cy="162" r="7"/></g>
+      <text x="80" y="220" text-anchor="middle" font-family="Mulish,sans-serif" font-weight="800" font-size="14" fill="var(--leaf)">Plant tissue</text>
+      <g stroke="var(--rose)" stroke-width="4" fill="none" stroke-linecap="round">
+        <path d="M262 110 l-30 -30 M262 110 l-36 4 M262 110 l-24 30 M262 110 l6 -40"/>
+        <path d="M282 112 C320 112 330 150 360 150"/>
+        <path d="M360 150 l22 -12 M360 150 l24 4 M360 150 l14 20"/>
+      </g>
+      <circle cx="270" cy="112" r="20" fill="var(--rose-soft)" stroke="var(--rose)" stroke-width="4"/>
+      <circle cx="270" cy="112" r="7" fill="var(--rose)"/>
+      <text x="300" y="220" text-anchor="middle" font-family="Mulish,sans-serif" font-weight="800" font-size="14" fill="var(--rose)">Nerve cell</text>
+    </svg>
+  </div>
+</header>
+
+<nav class="top" aria-label="Chapter sections">
+  <div class="wrap">
+    <a href="index.html" style="background:var(--fg);color:var(--bg)">&larr; All chapters</a><a href="#intro">Levels</a><a href="#diff">Plant vs animal</a><a href="#meristem">Meristems</a><a href="#permanent">Permanent tissues</a><a href="#conduct">Xylem &amp; phloem</a><a href="#epithelial">Epithelial</a><a href="#connective">Connective</a><a href="#muscle">Muscles</a><a href="#nerve">Nervous</a><a href="#joints">Joints &amp; skeleton</a><a href="#toti">Totipotency</a><a href="#keywords">Keywords</a><a href="#quiz">Quiz</a><a href="#exercises">Exercises</a>
+  </div>
+</nav>
+
+<main>
+<section id="intro"><div class="wrap">
+  <div class="sec-head"><div class="badge" style="background:var(--violet)">Intro</div><div><h2>Levels of organisation</h2><p class="lead">In unicellular organisms like <b>amoeba</b>, one cell does everything. Multicellular organisms have a <b>hierarchy</b>. Tap each level.</p></div></div>
+  <div class="ladder" id="ladder"></div>
+  <div class="info" id="ladderInfo" aria-live="polite"></div>
+  <div class="grid g2" style="margin-top:16px">
+    <div class="card c-rose"><span class="tag">In animals</span><p><b>Muscle tissue</b> moves the body. <b>Nervous tissue</b> carries messages.</p></div>
+    <div class="card c-leaf"><span class="tag">In plants</span><p><b>Xylem</b> carries water and minerals. <b>Phloem</b> carries food.</p></div>
+  </div>
+</div></section>
+
+<section id="diff"><div class="wrap">
+  <div class="sec-head"><div class="badge" style="background:var(--sky)">3.1</div><div><h2>Why are plant and animal tissues different?</h2></div></div>
+  <div class="tbl card" style="padding:0"><table>
+    <thead><tr><th>Point</th><th>Plants</th><th>Animals</th></tr></thead>
+    <tbody>
+      <tr><td><b>Movement</b></td><td>Fixed in one place, need support to stay upright</td><td>Mostly move (sponges are an exception)</td></tr>
+      <tr><td><b>Cell wall</b></td><td>Present: gives rigidity and strength</td><td>Absent: cells change shape easily, good for locomotion</td></tr>
+      <tr><td><b>Nutrition</b></td><td>Tissues for photosynthesis</td><td>Tissues to digest food</td></tr>
+      <tr><td><b>Growth</b></td><td>Grow throughout life from meristems</td><td>Growth pattern is different</td></tr>
+    </tbody></table></div>
+</div></section>
+
+<div class="part plant"><div class="wrap">Part A · Plant tissues</div></div>
+
+<section id="meristem"><div class="wrap">
+  <div class="sec-head"><div class="badge" style="background:var(--leaf)">3.2</div><div><h2>Meristematic tissue: tissues for growth</h2><p class="lead">Plants grow in length, in girth, and regrow after cutting or grazing. This needs <b>actively dividing cells</b> called <span class="kw">meristematic tissue</span>.</p></div></div>
+
+  <div class="card">
+    <h3>Activity 3.1 · The onion root experiment</h3>
+    <p>Two onions in water. On day 3, the root tips in Jar B are cut by about 1 cm. Tap "Cut Jar B tips" to see what happens.</p>
+    <div class="chart" style="margin-top:10px"><svg id="onion" viewBox="0 0 520 260" role="img" aria-label="Line chart of onion root length over 7 days"></svg></div>
+    <div class="qfoot"><div class="legend"><span><i class="dot" style="background:var(--leaf)"></i>Jar A · not cut</span><span><i class="dot" style="background:var(--rose)"></i>Jar B · tips cut on day 3</span></div><button class="btn primary" id="cutBtn">Cut Jar B tips</button></div>
+    <p class="tag" style="margin-top:6px">Sample values to show the trend</p>
+    <p id="onionMsg" style="margin-top:8px;font-weight:700" aria-live="polite"></p>
+  </div>
+
+  <h3 style="margin-top:26px">Three types of meristem</h3>
+  <p style="color:var(--muted);font-weight:700">Tap a type, or tap the glowing parts of the plant.</p>
+  <div class="grid g2" style="margin-top:10px">
+    <div class="card diagram" style="padding:10px">
+      <svg viewBox="0 0 300 320" role="img" aria-label="Plant showing apical, lateral and intercalary meristems">
+        <rect x="0" y="210" width="300" height="110" fill="var(--amber-soft)"/>
+        <path d="M150 210 V40" stroke="var(--leaf)" stroke-width="14" stroke-linecap="round"/>
+        <path d="M150 140 q40 -20 70 -10 M150 100 q-40 -20 -70 -8" stroke="var(--leaf)" stroke-width="7" fill="none" stroke-linecap="round"/>
+        <ellipse cx="226" cy="128" rx="20" ry="9" fill="var(--leaf)"/><ellipse cx="74" cy="91" rx="20" ry="9" fill="var(--leaf)"/>
+        <path d="M150 210 V290 M150 240 l-40 40 M150 240 l40 40 M150 265 l-22 30" stroke="var(--coral)" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <g class="hot" data-m="apical" tabindex="0" role="button" aria-label="Apical meristem">
+          <circle id="m-apical1" cx="150" cy="36" r="14" fill="var(--rose)" opacity=".35" stroke="var(--rose)" stroke-width="2"/>
+          <circle id="m-apical2" cx="150" cy="294" r="14" fill="var(--rose)" opacity=".35" stroke="var(--rose)" stroke-width="2"/>
+        </g>
+        <g class="hot" data-m="lateral" tabindex="0" role="button" aria-label="Lateral meristem">
+          <rect id="m-lateral" x="138" y="160" width="24" height="44" rx="6" fill="none" stroke="var(--sky)" stroke-width="4" stroke-dasharray="6 4" opacity=".45"/>
+        </g>
+        <g class="hot" data-m="inter" tabindex="0" role="button" aria-label="Intercalary meristem">
+          <rect id="m-inter1" x="134" y="136" width="32" height="10" rx="4" fill="var(--amber)" opacity=".4"/>
+          <rect id="m-inter2" x="134" y="96" width="32" height="10" rx="4" fill="var(--amber)" opacity=".4"/>
+        </g>
+        <g font-family="Mulish,sans-serif" font-weight="800" font-size="12" fill="var(--fg)">
+          <text x="172" y="40">Shoot tip</text><text x="172" y="300">Root tip</text><text x="176" y="100">Node</text>
+        </g>
+      </svg>
+    </div>
+    <div>
+      <div class="pick" id="merPick">
+        <button data-m="apical" aria-pressed="false"><i class="dot" style="background:var(--rose)"></i>Apical meristem</button>
+        <button data-m="lateral" aria-pressed="false"><i class="dot" style="background:var(--sky)"></i>Lateral meristem</button>
+        <button data-m="inter" aria-pressed="false"><i class="dot" style="background:var(--amber)"></i>Intercalary meristem</button>
+      </div>
+      <div class="info" id="merInfo" aria-live="polite">Pick a meristem to see where it is and what it does.</div>
+    </div>
+  </div>
+
+  <div class="grid g2" style="margin-top:16px">
+    <div class="card c-leaf"><h3>Features of meristem cells</h3><ul><li>Small cells with <b>thin cell walls</b></li><li><b>Large, prominent nucleus</b></li><li><b>Dense cytoplasm</b>, many organelles</li><li><b>Vacuoles absent</b></li><li>Tightly packed, little or no intercellular space</li></ul></div>
+    <div class="card c-amber"><h3>Annual growth rings</h3><p>Rings in a cut tree trunk come from the lateral meristem. Count them to estimate the <b>age</b> of the tree. Wide rings = good years, narrow rings = poor growing years.</p></div>
+  </div>
+  <div class="remember"><b>Differentiation:</b> some new cells lose the ability to divide and become specialised for support, transport or storage. Meristematic tissue becomes <b>permanent tissue</b> by differentiation.</div>
+  <div class="sci"><b>Meet a scientist:</b> B. G. L. Swamy, Indian botanist known for plant morphology and anatomy. His Kannada book <i>Hasuru Honnu</i> won the Kendra Sahitya Akademi Award in 1978.</div>
+</div></section>
+
+<section id="permanent"><div class="wrap">
+  <div class="sec-head"><div class="badge" style="background:var(--leaf)">3.2.4</div><div><h2>Permanent tissues</h2><p class="lead"><b>Simple</b> = one type of cell. <b>Complex</b> = more than one type. Explore a T.S. of a sunflower stem: tap a layer.</p></div></div>
+  <div class="grid g2">
+    <div class="card diagram" style="padding:10px">
+      <svg viewBox="0 0 320 320" role="img" aria-label="Transverse section of sunflower stem">
+        <g class="hot" data-t="epi" tabindex="0" role="button" aria-label="Epidermis"><circle cx="160" cy="160" r="150" fill="var(--leaf)" id="t-epi"/></g>
+        <g class="hot" data-t="col" tabindex="0" role="button" aria-label="Collenchyma"><circle cx="160" cy="160" r="140" fill="var(--amber)" id="t-col"/></g>
+        <g class="hot" data-t="par" tabindex="0" role="button" aria-label="Parenchyma"><circle cx="160" cy="160" r="122" fill="var(--leaf-soft)" id="t-par"/></g>
+        <g id="bundles"></g>
+        <circle cx="160" cy="160" r="60" fill="var(--leaf-soft)" pointer-events="none" stroke="var(--leaf)" stroke-width="1" stroke-dasharray="3 3"/>
+        <text x="160" y="164" text-anchor="middle" font-family="Mulish,sans-serif" font-weight="800" font-size="12" fill="var(--fg)" pointer-events="none">Ground tissue</text>
+      </svg>
+    </div>
+    <div>
+      <div class="pick" id="tsPick">
+        <button data-t="epi" aria-pressed="false"><i class="dot" style="background:var(--leaf)"></i>Epidermis (with cuticle)</button>
+        <button data-t="col" aria-pressed="false"><i class="dot" style="background:var(--amber)"></i>Collenchyma</button>
+        <button data-t="par" aria-pressed="false"><i class="dot" style="background:var(--leaf-soft);border:1px solid var(--leaf)"></i>Parenchyma (ground tissue)</button>
+        <button data-t="scl" aria-pressed="false"><i class="dot" style="background:var(--coral)"></i>Sclerenchyma</button>
+        <button data-t="phl" aria-pressed="false"><i class="dot" style="background:var(--rose)"></i>Phloem</button>
+        <button data-t="lat" aria-pressed="false"><i class="dot" style="background:var(--violet)"></i>Lateral meristem</button>
+        <button data-t="xyl" aria-pressed="false"><i class="dot" style="background:var(--sky)"></i>Xylem</button>
+      </div>
+      <div class="info" id="tsInfo" aria-live="polite">Pick a tissue.</div>
+    </div>
+  </div>
+
+  <h3 style="margin-top:26px">(i) Protective tissue · Epidermis</h3>
+  <div class="grid g3" style="margin-top:10px">
+    <div class="card c-leaf"><h3>Structure</h3><p>Single layer of tightly packed, flat, rectangular cells covered by waxy <span class="kw">cuticle</span> (made of <b>cutin</b>). Desert plants have a thick cuticle.</p></div>
+    <div class="card c-sky"><h3>Root hair</h3><p>Hair-like projections in roots that <b>increase surface area</b> to absorb water and minerals.</p></div>
+    <div class="card c-violet"><h3>Stomata</h3><p>Pores in leaf epidermis for <b>gaseous exchange</b> and <span class="kw">transpiration</span>. Transpiration creates a pull in xylem and removes wastes.</p></div>
+  </div>
+
+  <h3 style="margin-top:26px">(ii) Supporting tissue · Simple permanent tissues</h3>
+  <div class="tbl card" style="padding:0;margin-top:10px"><table>
+    <thead><tr><th>Tissue</th><th>Cells</th><th>Wall</th><th>Function</th><th>Found in</th></tr></thead>
+    <tbody>
+      <tr><td><svg class="cellpic" viewBox="0 0 120 70" aria-hidden="true"><g fill="var(--leaf-soft)" stroke="var(--leaf)" stroke-width="2"><circle cx="22" cy="22" r="18"/><circle cx="62" cy="20" r="17"/><circle cx="100" cy="24" r="16"/><circle cx="40" cy="52" r="16"/><circle cx="82" cy="52" r="16"/></g></svg><b>Parenchyma</b></td><td>Living, loosely packed with intercellular spaces</td><td>Thin</td><td>Stores food; photosynthesis in green parts; air spaces help aquatic plants float</td><td>Ground tissue</td></tr>
+      <tr><td><svg class="cellpic" viewBox="0 0 120 70" aria-hidden="true"><g fill="var(--amber-soft)" stroke="var(--amber)" stroke-width="2"><rect x="4" y="4" width="36" height="30" rx="4"/><rect x="42" y="4" width="36" height="30" rx="4"/><rect x="80" y="4" width="36" height="30" rx="4"/><rect x="4" y="36" width="36" height="30" rx="4"/><rect x="42" y="36" width="36" height="30" rx="4"/><rect x="80" y="36" width="36" height="30" rx="4"/></g><g fill="var(--amber)"><circle cx="41" cy="35" r="5"/><circle cx="79" cy="35" r="5"/></g></svg><b>Collenchyma</b></td><td>Living, corners thickened unevenly with <b>pectin</b></td><td>Uneven at corners</td><td>Support with <b>flexibility</b>: stems and tendrils bend without breaking</td><td>Stems, leaf stalks (e.g. coriander)</td></tr>
+      <tr><td><svg class="cellpic" viewBox="0 0 120 70" aria-hidden="true"><g fill="var(--coral-soft)" stroke="var(--coral)" stroke-width="7"><rect x="8" y="8" width="30" height="54" rx="6"/><rect x="45" y="8" width="30" height="54" rx="6"/><rect x="82" y="8" width="30" height="54" rx="6"/></g></svg><b>Sclerenchyma</b></td><td>Mostly <b>dead</b></td><td>Thick, with <b>lignin</b></td><td>Hard and strong, woody</td><td>Stems, leaf veins, coconut husk, walnut shell</td></tr>
+    </tbody></table></div>
+  <div class="remember"><b>Fresh twig bends, dry twig breaks:</b> fresh twigs have living collenchyma (flexible). <b>Coconut husk is hard</b> because of lignified sclerenchyma.</div>
+</div></section>
+
+<section id="conduct"><div class="wrap">
+  <div class="sec-head"><div class="badge" style="background:var(--sky)">(iii)</div><div><h2>Complex permanent tissues: xylem &amp; phloem</h2><p class="lead">Called complex because they are made of <b>different types of cells</b> working together.</p></div></div>
+  <div class="grid g2">
+    <div class="card c-sky"><span class="tag">Water &amp; minerals · roots → up</span><h3>Xylem</h3><p>Also gives strength.</p><ul><li><b>Tracheids</b> and <b>vessels</b>: tubular, thick-walled</li><li><b>Xylem fibres</b></li><li><b>Xylem parenchyma</b>: the <u>only living</u> part</li></ul></div>
+    <div class="card c-rose"><span class="tag">Food · leaves → other parts</span><h3>Phloem</h3><p>Mostly <b>living</b> cells.</p><ul><li><b>Sieve tubes</b>: joined end to end by perforated walls, carry food</li><li><b>Companion cells</b>: control loading and unloading of sugars</li><li><b>Phloem parenchyma</b>: stores food, resin, tannins, latex</li><li><b>Phloem fibres</b>: strength</li></ul></div>
+  </div>
+  <h3 style="margin-top:26px">Three tissue systems in plants</h3>
+  <div class="grid g3" style="margin-top:10px">
+    <div class="card c-leaf"><h3>Dermal</h3><p>Outer covering. Protects and reduces water loss.</p></div>
+    <div class="card c-amber"><h3>Ground</h3><p>Main body: parenchyma, collenchyma, sclerenchyma.</p></div>
+    <div class="card c-sky"><h3>Vascular</h3><p>Conducting tissues: xylem and phloem.</p></div>
+  </div>
+  <div class="sci"><b>Ready to go beyond · Bark:</b> in older stems, cells below the epidermis become <b>cork cambium</b> (a lateral meristem). It forms dead, compact <b>cork cells</b> that water and gases cannot pass through.</div>
+  <div class="sci"><b>Meet the scientists:</b> Sipra Guha Mukherjee and S. C. Maheshwari grew a complete plant through <b>anther culture</b>, a breakthrough in plant tissue culture.</div>
+</div></section>
+
+<div class="part animal"><div class="wrap">Part B · Animal tissues</div></div>
+
+<section id="epithelial"><div class="wrap">
+  <div class="sec-head"><div class="badge" style="background:var(--rose)">3.3.1</div><div><h2>Epithelial tissue</h2><p class="lead">Covers the body (skin) and lines organs like mouth, lungs, blood vessels and intestine. Cells are <b>closely packed</b>: keeps germs out, reduces water loss, helps absorption and secretion.</p></div></div>
+  <div class="seg" id="epiSeg"></div>
+  <div class="grid g2">
+    <div class="card diagram" style="padding:10px"><svg id="epiSvg" viewBox="0 0 300 180" role="img" aria-label="Epithelial cells"></svg></div>
+    <div class="card c-rose" id="epiText" aria-live="polite"></div>
+  </div>
+</div></section>
+
+<section id="connective"><div class="wrap">
+  <div class="sec-head"><div class="badge" style="background:var(--coral)">3.3.2</div><div><h2>Connective tissue</h2><p class="lead">Connects and supports other tissues. <b>Blood</b> and <b>bone</b> are both connective tissues; they differ because of their <span class="kw">matrix</span>: watery in blood, hard in bone.</p></div></div>
+  <div class="card">
+    <h3>Blood</h3>
+    <div class="stackbar" aria-label="Blood: plasma 55 percent, formed elements 45 percent"><div style="width:55%;background:var(--amber)">Plasma 55%</div><div style="width:45%;background:var(--rose)">Formed elements 45%</div></div>
+    <div class="grid g3" style="margin-top:12px">
+      <div class="card c-rose"><h3>RBCs</h3><p>Red due to <b>haemoglobin</b> (iron-rich protein). Live about <b>4 months</b>.</p></div>
+      <div class="card c-sky"><h3>WBCs</h3><p>Collect at infections: <b>redness, swelling, pus</b>.</p></div>
+      <div class="card c-amber"><h3>Platelets</h3><p>Help <b>blood clot</b> at a cut.</p></div>
+    </div>
+  </div>
+  <h3 style="margin-top:26px">Activity 3.3 · Feel it on your body</h3>
+  <p style="color:var(--muted);font-weight:700">Do the action, then tap the card to reveal the tissue.</p>
+  <div class="flips" id="ctFlips" style="margin-top:10px"></div>
+  <div class="remember"><b>Don't mix up:</b> <b>T</b>endon = muscle to bone (<b>T</b>ug the bone). <b>L</b>igament = bone to bone (<b>L</b>imits movement). Bone matrix has <b>calcium and phosphorus</b>.</div>
+</div></section>
+
+<section id="muscle"><div class="wrap">
+  <div class="sec-head"><div class="badge" style="background:var(--rose)">3.3.3</div><div><h2>Muscular tissue</h2><p class="lead"><b>Voluntary</b> movements are under our control (running, writing). <b>Involuntary</b> ones happen on their own (heartbeat, food moving in intestine).</p></div></div>
+  <div class="grid g3">
+    <div class="card c-rose"><svg viewBox="0 0 200 70" style="width:100%;height:auto" aria-hidden="true"><rect x="6" y="12" width="188" height="46" rx="20" fill="var(--rose-soft)" stroke="var(--rose)" stroke-width="2"/><g stroke="var(--rose)" stroke-width="3"><path d="M30 14v42M50 14v42M70 14v42M90 14v42M110 14v42M130 14v42M150 14v42M170 14v42"/></g><g fill="var(--fg)"><ellipse cx="40" cy="20" rx="5" ry="3"/><ellipse cx="100" cy="52" rx="5" ry="3"/><ellipse cx="160" cy="20" rx="5" ry="3"/></g></svg><span class="tag">Voluntary</span><h3>Skeletal</h3><ul><li>Long, cylindrical, <b>unbranched</b></li><li><b>Multinucleate</b></li><li><b>Striated</b> (light and dark bands)</li><li>Attached to bones</li></ul></div>
+    <div class="card c-amber"><svg viewBox="0 0 200 70" style="width:100%;height:auto" aria-hidden="true"><g fill="var(--amber-soft)" stroke="var(--amber)" stroke-width="2"><path d="M10 35 Q55 10 100 35 Q55 60 10 35Z"/><path d="M100 35 Q145 10 190 35 Q145 60 100 35Z"/></g><g fill="var(--fg)"><ellipse cx="55" cy="35" rx="6" ry="3"/><ellipse cx="145" cy="35" rx="6" ry="3"/></g></svg><span class="tag">Involuntary</span><h3>Smooth</h3><ul><li><b>Spindle-shaped</b></li><li>Single nucleus</li><li><b>No striations</b></li><li>Stomach, intestines; slow movements</li></ul></div>
+    <div class="card c-violet"><svg viewBox="0 0 200 70" style="width:100%;height:auto" aria-hidden="true"><g fill="var(--violet-soft)" stroke="var(--violet)" stroke-width="2"><path d="M6 20 H90 L110 40 H194 V58 H104 L84 38 H6Z"/></g><g stroke="var(--violet)" stroke-width="1.5" opacity=".6"><path d="M30 20v18M50 20v18M70 20v18M130 40v18M150 40v18M170 40v18"/></g><g fill="var(--fg)"><ellipse cx="40" cy="29" rx="5" ry="3"/><ellipse cx="150" cy="49" rx="5" ry="3"/></g></svg><span class="tag">Involuntary</span><h3>Cardiac</h3><ul><li>Cylindrical, <b>branched</b></li><li>Single nucleus</li><li><b>Faint striations</b></li><li>Only in heart; works without fatigue</li></ul></div>
+  </div>
+</div></section>
+
+<section id="nerve"><div class="wrap">
+  <div class="sec-head"><div class="badge" style="background:var(--violet)">3.3.4</div><div><h2>Nervous tissue</h2><p class="lead">The control and coordination network. Its cells are <span class="kw">neurons</span>, which receive, process and send messages. The brain is the control centre. Tap a part.</p></div></div>
+  <div class="grid g2">
+    <div class="card diagram" style="padding:10px">
+      <svg viewBox="0 0 420 200" role="img" aria-label="Structure of a neuron">
+        <g class="hot" data-n="den" tabindex="0" role="button" aria-label="Dendrites"><g id="n-den" stroke="var(--violet)" stroke-width="5" fill="none" stroke-linecap="round"><path d="M80 100 l-40 -40 M80 100 l-50 0 M80 100 l-40 40 M80 100 l-10 -55 M80 100 l-10 55 M40 60 l-14 -4 M40 140 l-14 4"/></g></g>
+        <g class="hot" data-n="body" tabindex="0" role="button" aria-label="Cell body"><circle id="n-body" cx="90" cy="100" r="28" fill="var(--violet-soft)" stroke="var(--violet)" stroke-width="5"/><circle cx="90" cy="100" r="10" fill="var(--violet)"/></g>
+        <g class="hot" data-n="axon" tabindex="0" role="button" aria-label="Axon"><path id="n-axon" d="M118 100 H330" stroke="var(--rose)" stroke-width="8" stroke-linecap="round"/></g>
+        <g class="hot" data-n="term" tabindex="0" role="button" aria-label="Axon terminals"><g id="n-term" stroke="var(--amber)" stroke-width="5" fill="var(--amber)" stroke-linecap="round"><path d="M330 100 l40 -34 M330 100 l46 0 M330 100 l40 34" fill="none"/><circle cx="372" cy="64" r="6"/><circle cx="380" cy="100" r="6"/><circle cx="372" cy="136" r="6"/></g></g>
+        <g font-family="Mulish,sans-serif" font-weight="800" font-size="13" fill="var(--fg)"><text x="18" y="190">Dendrites</text><text x="64" y="58">Cell body</text><text x="200" y="88">Axon</text><text x="330" y="180">Axon terminals</text></g>
+        <path d="M160 125 h60" stroke="var(--muted)" stroke-width="2"/><path d="M220 120 l10 5 -10 5z" fill="var(--muted)"/><text x="160" y="146" font-family="Mulish,sans-serif" font-weight="700" font-size="11" fill="var(--muted)">message direction</text>
+      </svg>
+    </div>
+    <div class="info" id="nInfo" aria-live="polite" style="margin-top:0">Tap a part of the neuron.</div>
+  </div>
+  <div class="remember"><b>Teamwork:</b> muscles cannot work on their own. They get instructions from nervous tissue. During exercise the brain tells the heart to beat faster.</div>
+</div></section>
+
+<section id="joints"><div class="wrap">
+  <div class="sec-head"><div class="badge" style="background:var(--coral)">3.4–3.6</div><div><h2>Musculoskeletal system, joints &amp; skeleton</h2><p class="lead">Bones, muscles, joints, cartilage, tendons and ligaments work together under the nervous system. Muscles <b>pull</b> bones through tendons. The skeleton is about <b>12–15%</b> of adult body weight.</p></div></div>
+  <p style="font-weight:700">A <span class="kw">joint</span> is where two or more bones meet. Pick a joint:</p>
+  <div class="seg" id="jSeg" style="margin-top:8px"></div>
+  <div class="grid g2">
+    <div class="card diagram" style="padding:10px"><svg id="jSvg" viewBox="0 0 300 200" role="img" aria-label="Joint diagram"></svg></div>
+    <div class="card c-coral" id="jText" aria-live="polite"></div>
+  </div>
+  <h3 style="margin-top:26px">Table 3.5 game · Which joint is it?</h3>
+  <p style="color:var(--muted);font-weight:700">Tap a body part to cycle through joint types, then Check.</p>
+  <div class="seg" id="jGame" style="margin-top:10px"></div>
+  <div class="qfoot"><span id="jMsg" style="font-weight:800" aria-live="polite"></span><span><button class="btn" id="jReset">Reset</button> <button class="btn primary" id="jCheck">Check</button></span></div>
+
+  <div class="grid g2" style="margin-top:22px">
+    <div class="card c-amber"><h3>Vertebral column</h3><p>Small bones called <b>vertebrae</b>, with <b>cartilage discs</b> between them for cushioning and flexibility. Protects the spinal cord.</p></div>
+    <div class="card c-sky"><h3>Rib cage</h3><p><b>12 pairs</b> of ribs, joined to spine at back and <b>sternum</b> in front by flexible cartilage, so the chest can expand while breathing. Protects heart and lungs.</p></div>
+  </div>
+  <div class="sci"><b>Bridging science and society:</b> Yoga improves flexibility, posture and breathing. International Yoga Day is on <b>21 June</b>. Stem cells in <b>bone marrow</b> are used in transplants for leukemia and thalassemia.</div>
+</div></section>
+
+<section id="toti"><div class="wrap">
+  <div class="sec-head"><div class="badge" style="background:var(--leaf)">Think</div><div><h2>Totipotency: one cell to a whole plant</h2><p class="lead">In <b>1958, F. C. Steward</b> grew a complete carrot plant from single <b>phloem cells</b>. The ability of a cell to form a whole organism is <span class="kw">totipotency</span>.</p></div></div>
+  <div class="steps">
+    <div>Cut 2 mg fragments of carrot root phloem</div>
+    <div>Culture in liquid nutrient medium with sugars and hormones</div>
+    <div>Stirring separates single cells</div>
+    <div>Cells <b>dedifferentiate</b> and divide into a mass of cells</div>
+    <div>They <b>redifferentiate</b> into root and shoot → plantlet → adult plant</div>
+  </div>
+  <div class="sci"><b>Crown gall disease:</b> tumour-like swellings caused by the bacterium <i>Agrobacterium tumefaciens</i>. Scientists now use it to put useful genes into plants for better crops.</div>
+</div></section>
+
+<section id="keywords"><div class="wrap">
+  <div class="sec-head"><div class="badge" style="background:var(--violet)">Aa</div><div><h2>Keyword flashcards</h2><p class="lead">Say the meaning aloud, then tap to check.</p></div></div>
+  <label for="kwSearch" class="tag">Search a keyword</label>
+  <input id="kwSearch" class="search" type="search" placeholder="e.g. xylem, ligament, cuticle">
+  <div class="flips plantf" id="kwGrid"></div>
+</div></section>
+
+<section id="quiz"><div class="wrap">
+  <div class="sec-head"><div class="badge" style="background:var(--leaf)">Quiz</div><div><h2>Quick check</h2><p class="lead">14 questions from the whole chapter.</p></div></div>
+  <div class="card quiz" id="quizBox"></div>
+</div></section>
+
+<section id="exercises" style="border-bottom:0"><div class="wrap">
+  <div class="sec-head"><div class="badge" style="background:var(--coral)">Ex</div><div><h2>Revise, Reflect, Refine · answer points</h2><p class="lead">Key points for each textbook question.</p></div></div>
+  <div class="card chart" style="margin-bottom:16px">
+    <h3>Q7 graph · Teak tree age vs diameter and rings</h3>
+    <svg id="teak" viewBox="0 0 520 280" role="img" aria-label="Line chart of teak tree diameter and annual rings against age"></svg>
+    <div class="legend"><span><i class="dot" style="background:var(--leaf)"></i>Diameter at breast height (cm)</span><span><i class="dot" style="background:var(--coral)"></i>Number of annual rings</span></div>
+  </div>
+  <div id="exList"></div>
+</div></section>
+</main>
+
+<script>
+const $=s=>document.querySelector(s);
+const NS='http://www.w3.org/2000/svg';
+function seg(el,items,cb){el.innerHTML=items.map(([k,l],i)=>`<button data-k="${k}" aria-pressed="${i===0}">${l}</button>`).join('');el.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;el.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));cb(b.dataset.k)});cb(items[0][0])}
+function keyAct(sel,fn){document.querySelectorAll(sel).forEach(g=>{g.addEventListener('click',()=>fn(g));g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();fn(g)}})})}
+
+/* ladder */
+const lv=[['Cell','The basic unit of life. Example: a muscle cell.'],['Tissue','Similar cells doing a similar job together. Example: muscle tissue.'],['Organ','More than one type of tissue. Example: heart, leaf.'],['Organ system','Different organs working together. Example: musculoskeletal system.'],['Organism','All organ systems together make a living being.']];
+$('#ladder').innerHTML=lv.map(([n],i)=>`${i?'<span class="arr" aria-hidden="true">→</span>':''}<button data-i="${i}" aria-pressed="${i===1}">${n}</button>`).join('');
+$('#ladderInfo').textContent=lv[1][1];
+$('#ladder').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;$('#ladder').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));$('#ladderInfo').innerHTML=`<b>${lv[b.dataset.i][0]}:</b> ${lv[b.dataset.i][1]}`});
+
+/* line chart helper */
+function lineChart(svg,{xs,series,xMax,yMax,yStep,xLabel,yLabel,xTicks}){
+  const W=520,H=svg.viewBox.baseVal.height,L=50,R=16,T=14,B=44;
+  const X=v=>L+v/xMax*(W-L-R),Y=v=>H-B-v/yMax*(H-T-B);
+  let s='';for(let y=0;y<=yMax;y+=yStep){s+=`<line x1="${L}" x2="${W-R}" y1="${Y(y)}" y2="${Y(y)}" stroke="var(--line)"/><text x="${L-8}" y="${Y(y)+4}" text-anchor="end" font-size="11" font-weight="700" fill="var(--muted)" font-family="Mulish,sans-serif">${y}</text>`}
+  xTicks.forEach(x=>s+=`<text x="${X(x)}" y="${H-B+18}" text-anchor="middle" font-size="11" font-weight="700" fill="var(--muted)" font-family="Mulish,sans-serif">${x}</text>`);
+  s+=`<text x="${(L+W-R)/2}" y="${H-6}" text-anchor="middle" font-size="12" font-weight="800" fill="var(--fg)" font-family="Mulish,sans-serif">${xLabel}</text><text transform="translate(14 ${(T+H-B)/2}) rotate(-90)" text-anchor="middle" font-size="12" font-weight="800" fill="var(--fg)" font-family="Mulish,sans-serif">${yLabel}</text>`;
+  series.forEach(({ys,c,n})=>{const pts=ys.map((y,i)=>y==null?null:[X(xs[i]),Y(y)]).filter(Boolean);s+=`<polyline points="${pts.map(p=>p.join(',')).join(' ')}" fill="none" stroke="${c}" stroke-width="3.5" stroke-linejoin="round"/>`+pts.map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="5" fill="${c}" stroke="var(--surface)" stroke-width="2"/>`).join('')});
+  svg.innerHTML=s;
+}
+/* onion */
+const days=[1,2,3,4,5,6,7];
+const A=[0.5,1.2,2.0,2.8,3.6,4.4,5.2];
+const Bcut=[0.5,1.2,1.0,1.0,1.0,1.0,1.0];
+let cut=false;
+function drawOnion(){lineChart($('#onion'),{xs:days,xMax:7.4,yMax:6,yStep:1,xLabel:'Days',yLabel:'Root length (cm)',xTicks:days,series:[{ys:A,c:'var(--leaf)'},{ys:cut?Bcut:A.map((v,i)=>i<3?v+0.05:null),c:'var(--rose)'}]})}
+drawOnion();
+$('#cutBtn').onclick=()=>{cut=!cut;drawOnion();$('#cutBtn').textContent=cut?'Undo cut':'Cut Jar B tips';$('#onionMsg').textContent=cut?'Jar B roots stop growing after the tips are cut. Roots grow only from their tips, where cells keep dividing: the apical meristem.':''};
+
+/* meristems */
+const mer={apical:['Apical meristem','At the tips of roots and shoots.','Increases length (height of stem, depth of roots).',['m-apical1','m-apical2']],lateral:['Lateral meristem','In a ring along the circumference of the stem.','Increases girth (thickness). Makes annual rings.',['m-lateral']],inter:['Intercalary meristem','At the base of the internode, just above the node. (Node = where leaves or branches arise.)','Regrowth after cutting or grazing: grass after mowing, bushy hedges.',['m-inter1','m-inter2']]};
+const allM=['m-apical1','m-apical2','m-lateral','m-inter1','m-inter2'];
+function showMer(k){allM.forEach(id=>document.getElementById(id).setAttribute('opacity',mer[k][3].includes(id)?1:.25));$('#merPick').querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.m===k));$('#merInfo').innerHTML=`<b>${mer[k][0]}</b><br>Where: ${mer[k][1]}<br>Job: ${mer[k][2]}`}
+$('#merPick').addEventListener('click',e=>{const b=e.target.closest('button');if(b)showMer(b.dataset.m)});
+keyAct('[data-m].hot',g=>showMer(g.dataset.m));
+
+/* T.S. stem */
+const bz=$('#bundles');let bs='';
+for(let i=0;i<10;i++){const a=i/10*Math.PI*2,cx=160+92*Math.cos(a),cy=160+92*Math.sin(a),rot=a*180/Math.PI+90;
+bs+=`<g transform="translate(${cx} ${cy}) rotate(${rot})"><g class="hot" data-t="scl" tabindex="-1"><path class="t-scl" d="M-12 -24 Q0 -32 12 -24 L10 -18 Q0 -24 -10 -18Z" fill="var(--coral)"/></g><g class="hot" data-t="phl" tabindex="-1"><path class="t-phl" d="M-11 -18 Q0 -24 11 -18 L11 -8 L-11 -8Z" fill="var(--rose)"/></g><g class="hot" data-t="lat" tabindex="-1"><rect class="t-lat" x="-11" y="-8" width="22" height="5" fill="var(--violet)"/></g><g class="hot" data-t="xyl" tabindex="-1"><path class="t-xyl" d="M-11 -3 L11 -3 L0 16Z" fill="var(--sky)"/></g></g>`}
+bz.innerHTML=bs;
+const ts={epi:['Epidermis','Outermost single layer with waxy cuticle. Protects from injury, water loss and microbes.'],col:['Collenchyma','Living cells with pectin at the corners. Gives support with flexibility.'],par:['Parenchyma','Living, thin-walled, loosely packed. Stores food. Main part of ground tissue.'],scl:['Sclerenchyma','Dead cells with lignin. Makes a hard cap over each vascular bundle.'],phl:['Phloem','Carries food from leaves to other parts. Mostly living cells.'],lat:['Lateral meristem','Ring of dividing cells between xylem and phloem. Increases girth.'],xyl:['Xylem','Carries water and minerals up from the roots. Gives strength.']};
+function showTs(k){['epi','col','par'].forEach(x=>$('#t-'+x).setAttribute('opacity',x===k?1:.45));['scl','phl','lat','xyl'].forEach(x=>document.querySelectorAll('.t-'+x).forEach(p=>p.setAttribute('opacity',x===k?1:.35)));$('#tsPick').querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.t===k));$('#tsInfo').innerHTML=`<b>${ts[k][0]}:</b> ${ts[k][1]}`}
+$('#tsPick').addEventListener('click',e=>{const b=e.target.closest('button');if(b)showTs(b.dataset.t)});
+document.querySelector('svg [data-t]')&&document.querySelectorAll('svg .hot[data-t]').forEach(g=>g.addEventListener('click',e=>{e.stopPropagation();showTs(g.dataset.t)}));
+document.querySelectorAll('svg .hot[data-t][tabindex="0"]').forEach(g=>g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();showTs(g.dataset.t)}}));
+
+/* epithelial */
+function cellsRow(n,w,h,y,c,shape){let s='';for(let i=0;i<n;i++){const x=10+i*w;s+=shape==='flat'?`<rect x="${x}" y="${y}" width="${w-2}" height="${h}" rx="3" fill="var(--rose-soft)" stroke="${c}" stroke-width="2"/><ellipse cx="${x+w/2}" cy="${y+h/2}" rx="${w/5}" ry="${h/4}" fill="${c}"/>`:'';}return s}
+const epi=[
+ ['ex','Exchange','Single layer of thin, flat cells','Rapid diffusion of liquids and gases','Lining of blood vessels and lungs',()=>cellsRow(8,35,18,90,'var(--rose)','flat')+'<text x="150" y="150" text-anchor="middle" font-size="12" font-weight="800" fill="var(--muted)" font-family="Mulish,sans-serif">one thin flat layer</text>'],
+ ['pr','Protection','Many layers; outer cells flat and tightly packed','Protects from injury, friction and microbes','Skin, mouth, oesophagus',()=>{let s='';for(let r=0;r<4;r++)s+=cellsRow(8,35,r===0?14:26,20+r*28,'var(--rose)','flat');return s}],
+ ['se','Secretion','Cuboidal or columnar cells that make and release substances','Mucus, enzymes, hormones, sweat, saliva','Salivary glands, sweat glands, stomach lining',()=>{let s='';for(let i=0;i<6;i++){const x=20+i*45;s+=`<rect x="${x}" y="60" width="42" height="60" rx="4" fill="var(--rose-soft)" stroke="var(--rose)" stroke-width="2"/><circle cx="${x+21}" cy="100" r="7" fill="var(--rose)"/><circle cx="${x+21}" cy="${46-(i%2)*8}" r="5" fill="var(--amber)"/>`}return s}],
+ ['sn','Sensory','Receptor cells with hair-like cilia','Smell, taste, sound and balance','Nostrils, taste buds, inner ear',()=>{let s='';for(let i=0;i<6;i++){const x=20+i*45;s+=`<rect x="${x}" y="70" width="42" height="70" rx="4" fill="var(--rose-soft)" stroke="var(--rose)" stroke-width="2"/><circle cx="${x+21}" cy="110" r="7" fill="var(--rose)"/><path d="M${x+12} 70 q-3 -20 2 -34 M${x+21} 70 v-36 M${x+30} 70 q3 -20 -2 -34" stroke="var(--violet)" stroke-width="2" fill="none"/>`}return s}],
+ ['ab','Absorption','Single layer of tall, pillar-like cells, often with hair-like structures','Efficient uptake of nutrients and water','Lining of small intestine',()=>{let s='';for(let i=0;i<7;i++){const x=15+i*39;s+=`<rect x="${x}" y="50" width="37" height="110" rx="4" fill="var(--rose-soft)" stroke="var(--rose)" stroke-width="2"/><ellipse cx="${x+18}" cy="130" rx="7" ry="10" fill="var(--rose)"/>`;for(let j=0;j<5;j++)s+=`<path d="M${x+4+j*7} 50 v-12" stroke="var(--rose)" stroke-width="2"/>`}return s}]];
+seg($('#epiSeg'),epi.map(e=>[e[0],e[1]]),k=>{const e=epi.find(x=>x[0]===k);$('#epiSvg').innerHTML=e[5]();$('#epiText').innerHTML=`<span class="tag">Function</span><h3>${e[1]}</h3><p>${e[3]}.</p><p style="margin-top:8px"><b>Structure:</b> ${e[2]}.</p><p style="margin-top:8px"><b>Found in:</b> ${e[4]}.</p>`});
+
+/* flip helper */
+function flips(el,items){el.innerHTML=items.map(([t,s,b])=>`<button class="flip" aria-label="${t}"><div class="in"><div class="f"><b>${t}</b>${s?`<small>${s}</small>`:''}</div><div class="b">${b}</div></div></button>`).join('')}
+document.addEventListener('click',e=>{const f=e.target.closest('.flip');if(f)f.classList.toggle('open')});
+flips($('#ctFlips'),[
+ ['Touch your elbow gently','Hard and rigid','<b>Bone</b>: gives strength, support and protection.'],
+ ['Press and fold your ear, or press your nose','Soft, springs back','<b>Cartilage</b>: flexible, cushions bone ends, absorbs shock.'],
+ ['Touch your forearm and wiggle fingers','Forearm moves too','<b>Tendon</b>: connects muscle to bone, brings movement.'],
+ ['Sit and lift your leg as far as the knee allows','The joint stops at a limit','<b>Ligament</b>: connects bone to bone, limits movement, prevents dislocation.']]);
+
+/* neuron */
+const nv={den:['Dendrites','Receive signals from other neurons.'],body:['Cell body','Contains the nucleus and controls the cell’s activities.'],axon:['Axon','A long fibre that carries messages away from the cell body.'],term:['Axon terminals','Pass the message on to other cells.']};
+function showN(k){Object.keys(nv).forEach(x=>$('#n-'+x).setAttribute('opacity',x===k?1:.3));$('#nInfo').innerHTML=`<b>${nv[k][0]}:</b> ${nv[k][1]}`}
+keyAct('[data-n].hot',g=>showN(g.dataset.n));
+
+/* joints */
+const bone='fill="var(--surface)" stroke="var(--coral)" stroke-width="4"';
+const jt=[
+ ['ball','Ball and socket','The rounded top of the upper arm bone fits into a hollow in the shoulder bone.','Forward, backward, sideways and circular movement.','Shoulder, hip',`<path d="M60 40 Q120 30 140 100 Q120 170 60 160" ${bone}/><circle cx="160" cy="100" r="34" ${bone}/><rect x="180" y="86" width="110" height="28" rx="12" ${bone}/><path d="M150 50 a60 60 0 0 1 0 100" stroke="var(--violet)" stroke-width="3" fill="none" stroke-dasharray="5 5"/>`],
+ ['hinge','Hinge','Bends and straightens in one direction only, like a door hinge.','Movement in one plane.','Elbow, knee (protected by the kneecap), fingers',`<rect x="20" y="86" width="130" height="28" rx="12" ${bone}/><g transform="rotate(-35 160 100)"><rect x="150" y="86" width="130" height="28" rx="12" ${bone}/></g><circle cx="155" cy="100" r="14" fill="var(--coral)"/><path d="M230 60 a80 80 0 0 1 20 50" stroke="var(--violet)" stroke-width="3" fill="none" stroke-dasharray="5 5"/>`],
+ ['pivot','Pivot','The skull turns on the backbone like a doorknob turning.','Side to side rotation, as when shaking your head "no".','Neck (skull and backbone)',`<ellipse cx="150" cy="60" rx="90" ry="26" ${bone}/><rect x="135" y="80" width="30" height="110" rx="10" ${bone}/><path d="M80 30 q70 -30 140 0" stroke="var(--violet)" stroke-width="3" fill="none" stroke-dasharray="5 5"/><path d="M216 24 l8 8 -11 2z" fill="var(--violet)"/>`],
+ ['fixed','Fixed','Flat bones of the skull are joined so they cannot move.','No movement. Keeps the brain safe.','Skull',`<path d="M40 150 Q40 30 150 30 Q260 30 260 150Z" ${bone}/><path d="M150 30 L140 70 L160 110 L148 150 M60 100 L100 95 L120 120" stroke="var(--coral)" stroke-width="3" fill="none"/>`]];
+seg($('#jSeg'),jt.map(j=>[j[0],j[1]]),k=>{const j=jt.find(x=>x[0]===k);$('#jSvg').innerHTML=j[5];$('#jText').innerHTML=`<span class="tag">Joint</span><h3>${j[1]}</h3><p>${j[2]}</p><p style="margin-top:8px"><b>Allows:</b> ${j[3]}</p><p style="margin-top:8px"><b>Examples:</b> ${j[4]}</p>`});
+
+/* joint game */
+const jParts=[['Shoulder','Ball and socket'],['Elbow','Hinge'],['Knee','Hinge'],['Neck','Pivot'],['Fingers','Hinge'],['Skull','Fixed']];
+const jTypes=['Ball and socket','Hinge','Pivot','Fixed'];let jSt={};
+function drawJ(check){$('#jGame').innerHTML=jParts.map(([p,a],i)=>{const v=jSt[i];const w=check&&v!==a;return `<button data-i="${i}" aria-pressed="false" style="${w?'border-color:var(--bad);border-style:dashed':v?'border-color:var(--coral)':''}">${p}${v?' · '+v:''}</button>`}).join('')}
+$('#jGame').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const i=b.dataset.i;const c=jTypes.indexOf(jSt[i]);jSt[i]=jTypes[(c+1)%4];drawJ();$('#jMsg').textContent=''});
+$('#jCheck').onclick=()=>{const ok=jParts.filter(([p,a],i)=>jSt[i]===a).length;drawJ(true);$('#jMsg').textContent=ok===6?'All 6 correct!':`${ok} / 6 correct. Fix the dashed ones.`};
+$('#jReset').onclick=()=>{jSt={};drawJ();$('#jMsg').textContent=''};drawJ();
+
+/* keywords */
+const kw=[['Tissue','A group of cells similar in structure that work together for a specific function.'],['Division of labour','Different tissues doing different jobs; makes the body efficient.'],['Meristematic tissue','Actively dividing cells responsible for plant growth.'],['Apical meristem','At root and shoot tips; increases length.'],['Lateral meristem','Ring of dividing cells in stem; increases girth.'],['Intercalary meristem','At base of internode/above node; regrowth after cutting.'],['Node','Point on a stem where leaves or branches arise.'],['Internode','Part of the stem between two nodes.'],['Annual rings','Rings in a tree trunk; count them to find tree age.'],['Differentiation','Process by which meristem cells become specialised permanent tissue.'],['Permanent tissue','Cells that have lost the ability to divide; specialised for a job.'],['Simple tissue','Made of only one type of cell.'],['Complex tissue','Made of more than one type of cell, e.g. xylem, phloem.'],['Epidermis','Outermost protective layer of a plant.'],['Cuticle','Waxy layer of cutin on epidermis; reduces water loss.'],['Stomata','Pores in leaves for gas exchange and transpiration.'],['Transpiration','Loss of water vapour through stomata; creates pull in xylem.'],['Parenchyma','Living, thin-walled, loosely packed cells; store food.'],['Collenchyma','Living cells with pectin at corners; flexible support.'],['Sclerenchyma','Dead cells with lignin; hard and strong.'],['Lignin','Chemical that makes sclerenchyma walls thick and hard.'],['Pectin','Chemical giving rubber-like flexibility to collenchyma.'],['Xylem','Carries water and minerals; tracheids, vessels, fibres, parenchyma.'],['Phloem','Carries food; sieve tubes, companion cells, parenchyma, fibres.'],['Companion cells','Control loading and unloading of sugars in sieve tubes.'],['Cork cambium','Lateral meristem below epidermis that forms cork (bark).'],['Epithelial tissue','Covers body and lines organs; closely packed cells.'],['Connective tissue','Connects and supports other tissues, e.g. blood, bone.'],['Matrix','Material around connective tissue cells; liquid in blood, hard in bone.'],['Haemoglobin','Iron-rich protein in RBCs; gives blood its red colour.'],['Platelets','Blood cells that help clotting.'],['Cartilage','Soft, flexible connective tissue; cushions bone ends.'],['Tendon','Connects muscle to bone.'],['Ligament','Connects bone to bone; limits movement.'],['Skeletal muscle','Voluntary; striated, multinucleate, unbranched.'],['Smooth muscle','Involuntary; spindle-shaped, no striations.'],['Cardiac muscle','Involuntary; branched, faint striations; only in heart.'],['Neuron','Nerve cell: cell body, dendrites, axon.'],['Joint','Junction between two or more bones.'],['Vertebrae','Small bones that make up the backbone.'],['Totipotency','Ability of a single cell to grow into a whole organism.'],['Dedifferentiation','Specialised cells regain the ability to divide.']];
+function drawKw(q=''){q=q.toLowerCase();flips($('#kwGrid'),kw.filter(([t,d])=>(t+d).toLowerCase().includes(q)).map(([t,d])=>[t,'Tap to flip',d]))}
+drawKw();$('#kwSearch').addEventListener('input',e=>drawKw(e.target.value));
+
+/* quiz */
+const Q=[
+['Which meristem increases the girth of a stem?',['Apical','Lateral','Intercalary','Cork'],1,'The lateral meristem is a ring of dividing cells in the stem.'],
+['Grass grows back after mowing because of…',['Apical meristem','Lateral meristem','Intercalary meristem','Sclerenchyma'],2,'Intercalary meristem is at the nodes.'],
+['Meristem cells usually lack…',['Nucleus','Cytoplasm','Vacuoles','Cell wall'],2,'Vacuoles are absent, so cells can divide fast.'],
+['Which tissue lets a fresh twig bend without breaking?',['Parenchyma','Collenchyma','Sclerenchyma','Xylem'],1,'Collenchyma has pectin, giving flexibility.'],
+['Coconut husk is hard because of…',['Collenchyma','Parenchyma','Sclerenchyma','Phloem'],2,'Sclerenchyma has thick lignified walls.'],
+['The only living part of xylem is…',['Tracheids','Vessels','Xylem fibres','Xylem parenchyma'],3,'Tracheids, vessels and fibres are mostly dead.'],
+['Food from leaves is carried by…',['Vessels','Sieve tubes','Tracheids','Root hair'],1,'Sieve tubes of phloem carry food.'],
+['Which epithelium lines the lungs and blood vessels?',['Many-layered','Thin, flat single layer','Tall pillar-like','Ciliated sensory'],1,'Thin flat cells allow rapid diffusion.'],
+['Blood plasma makes up about what share of blood?',['25%','45%','55%','75%'],2,'Plasma is about 55%; formed elements about 45%.'],
+['Muscle joined to bone by…',['Ligament','Cartilage','Tendon','Matrix'],2,'Tendons connect muscle to bone.'],
+['Which muscle is branched with faint striations?',['Skeletal','Smooth','Cardiac','None'],2,'Cardiac muscle is found only in the heart.'],
+['Which part of a neuron receives signals?',['Axon','Dendrites','Axon terminals','Nucleus'],1,'Dendrites receive signals from other neurons.'],
+['Shaking your head "no" uses which joint?',['Hinge','Fixed','Ball and socket','Pivot'],3,'The skull turns on the backbone at a pivot joint.'],
+['F. C. Steward grew a whole carrot plant from…',['Root hair','Phloem cells','Seeds','Leaf epidermis'],1,'This showed totipotency.']];
+let qi=0,score=0;
+function drawQ(){const box=$('#quizBox');if(qi>=Q.length){box.innerHTML=`<div class="qprog"><div style="width:100%"></div></div><h3>You scored ${score} / ${Q.length}</h3><p style="margin-top:6px">${score>=12?'Excellent work!':score>=8?'Good. Revise the ones you missed.':'Go through the flashcards and try again.'}</p><div class="qfoot"><span></span><button class="btn primary" id="qRestart">Try again</button></div>`;$('#qRestart').onclick=()=>{qi=0;score=0;drawQ()};return}
+const [q,o]=Q[qi];box.innerHTML=`<div class="qprog"><div style="width:${qi/Q.length*100}%"></div></div><span class="tag">Question ${qi+1} of ${Q.length} · Score ${score}</span><h3 style="margin-top:4px">${q}</h3><div class="opts">${o.map((t,i)=>`<button class="opt" data-i="${i}">${t}</button>`).join('')}</div><p class="why" id="why" aria-live="polite"></p><div class="qfoot"><span></span><button class="btn primary" id="qNext" hidden>Next</button></div>`;
+box.querySelector('.opts').onclick=e=>{const b=e.target.closest('.opt');if(!b||b.disabled)return;const a=Q[qi][2];box.querySelectorAll('.opt').forEach((x,i)=>{x.disabled=true;if(i===a)x.classList.add('ok')});if(+b.dataset.i===a){score++;$('#why').textContent='Correct! '+Q[qi][3]}else{b.classList.add('no');$('#why').textContent='Not quite. '+Q[qi][3]}$('#qNext').hidden=false};
+$('#qNext').onclick=()=>{qi++;drawQ()}}
+drawQ();
+
+/* teak chart */
+lineChart($('#teak'),{xs:[5,10,20,25,30,40],xMax:42,yMax:45,yStep:5,xLabel:'Age of teak tree (years)',yLabel:'Value',xTicks:[5,10,20,25,30,40],series:[{ys:[4,8,24,28,32,40],c:'var(--leaf)'},{ys:[5,10,20,25,30,40],c:'var(--coral)'}]});
+
+/* exercises */
+const ex=[
+['Q1. What property lets meristem cells divide repeatedly?','<p><b>(iii)</b> Thin walls, dense cytoplasm and a large prominent nucleus.</p>'],
+['Q2. Plant cannot move food from leaves to roots. Which tissue?','<p><b>(ii) Phloem.</b></p>'],
+['Q3. Why is lining epithelium only one or a few cells thick?','<p><b>(iii)</b> To allow quick exchange of materials across them.</p>'],
+['Q4. Straight-leg jump vs normal jump','<p>In the straight-leg jump, ankles, knees and hips stay almost straight, so the jump is low and the landing is jarring. In a normal jump, ankles and knees bend and the hips flex, so muscles push off more strongly and the bent joints absorb the shock on landing.</p>'],
+['Q5. Joint used when bending knees and ankles','<p><b>(ii) Hinge</b> (knee is a hinge joint; ankle bends mainly in one plane).</p>'],
+['Q6. Assertion–Reason','<ul><li><b>A:</b> (iii) Assertion true, Reason false. Lung epithelium is a single layer of thin flat cells.</li><li><b>B:</b> (i) Both true; Reason explains Assertion.</li><li><b>C:</b> (iv) Assertion false (tendons join muscle to bone), Reason true.</li><li><b>D:</b> (iii) Assertion true, Reason false. Hinge bones are shaped to allow movement in one plane only.</li></ul>'],
+['Q7. Teak tree graph','<ul><li>(i) Diameter rises steadily with age, from 4 cm at 5 years to 40 cm at 40 years; growth was fastest between 10 and 20 years.</li><li>(ii) One annual ring forms each year, so the number of rings equals the age and rises along with diameter.</li><li>(iii) <b>Lateral meristem</b>, present as a ring in the stem between xylem and phloem.</li></ul>'],
+['Q8. Tree debarked by an elephant','<ul><li>(i) Protection is lost; phloem in the bark is damaged, so food transport to roots stops; more water loss and infection.</li><li>(ii) Further damage would affect the <b>lateral meristem</b> and <b>xylem</b>.</li><li>(iii) Water and mineral transport (xylem) and growth in girth would stop.</li><li>(iv) Assumption: the bark includes phloem and the damage goes all around the trunk. If only a small patch is removed, the tree may survive and heal.</li></ul>'],
+['Q9. Mango sapling bends in wind','<p><b>Collenchyma</b> gives flexibility (pectin at the corners). If replaced by <b>sclerenchyma</b>, the stem would be hard and rigid and might snap in strong wind instead of bending.</p>'],
+['Q10. Sugarcane cuttings A and B','<ul><li>(i) Type B had a <b>node</b> with meristematic tissue that can produce new shoots and roots; type A had none.</li><li>(ii) Presence of a node (bud) in B.</li><li>(iii) Whether the cutting sprouted, and the length or number of shoots after a few weeks.</li><li>(iv) Same length and thickness of cutting, same soil, water, light, temperature and time.</li></ul>'],
+['Q11. Rohan vs Rajiv on the definition of tissue','<p>Rajiv is right. In a <b>simple tissue</b> (e.g. parenchyma) all cells are alike. A <b>complex tissue</b> like xylem or phloem has different types of cells (tracheids, vessels, fibres, parenchyma) that work together for one common function.</p>'],
+['Q12. Coconut husk fibres','<p><b>Sclerenchyma</b>: dead cells with thick lignified walls give toughness. Living parenchyma has thin walls and loose packing, so it is soft and cannot give that strength.</p>'],
+['Q13. Vibha: "meristems are only at root and shoot tips"','<p>Incorrect. There are also lateral meristems (girth) and intercalary meristems (at nodes). Neha could ask: "Then how does a tree trunk get thicker, or how does grass grow back after mowing?"</p>'],
+['Q14. Plant and animal cell of the same size','<ul><li>(i) The <b>plant cell</b> has a larger vacuole; mature plant cells have a large central vacuole to store sap and keep the cell firm, while animal cells have small vacuoles.</li><li>(ii) Assumption: both are mature cells; a meristem plant cell would have no vacuole.</li></ul>'],
+['Q15. "Each plant tissue performs only one function"','<p>Ask: "Does any tissue do more than one job?" Examples: parenchyma stores food, photosynthesises and helps aquatic plants float; xylem carries water and also gives strength; epidermis protects and its stomata help in gas exchange and transpiration. So the statement is not fully correct.</p>']];
+$('#exList').innerHTML=ex.map(([q,a])=>`<details><summary>${q}</summary>${a}</details>`).join('');
+
+/* nav highlight */
+const links=[...document.querySelectorAll('nav.top a')];
+const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)links.forEach(l=>l.classList.toggle('on',l.getAttribute('href')==='#'+e.target.id))}),{rootMargin:'-40% 0px -55% 0px'});
+document.querySelectorAll('main section').forEach(s=>obs.observe(s));
+
+/* initial states */
+showMer('apical');showTs('epi');showN('body');
+</script>
+
+</body>
+</html>

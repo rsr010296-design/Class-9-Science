@@ -1,0 +1,543 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Improvement in Food Resources</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Mulish:wght@400;600;700;800&display=swap">
+<style>
+/* Layout: farm-field bands — each chapter section is a coloured "field strip" with a sticky chapter nav on top */
+:root{
+  --bg:#fbfaf3; --surface:#ffffff; --fg:#22301f; --muted:#5c6b56; --line:#e3e6d6;
+  --leaf:#2f8f3a; --leaf-soft:#e3f3dd;
+  --wheat:#d99a12; --wheat-soft:#fdf1d3;
+  --soil:#9a5b2e; --soil-soft:#f6e6d8;
+  --sky:#1f7fbf; --sky-soft:#dcefFA;
+  --berry:#c43d6b; --berry-soft:#fbe1ea;
+  --violet:#6a4fc4; --violet-soft:#ebe6fb;
+  --good:#2f8f3a; --bad:#c9372c;
+  --display:"Baloo 2","Trebuchet MS",system-ui,sans-serif;
+  --body:"Mulish",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --shadow:0 2px 0 rgba(34,48,31,.08),0 8px 24px rgba(34,48,31,.06);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#151b14; --surface:#1e261c; --fg:#eef3e8; --muted:#a8b6a0; --line:#334030;
+  --leaf:#6fcf6a; --leaf-soft:#22361f; --wheat:#f2bd45; --wheat-soft:#3a2f14;
+  --soil:#e0a072; --soil-soft:#3a2a1e; --sky:#6cbcf0; --sky-soft:#17304a;
+  --berry:#f07aa3; --berry-soft:#3d1d29; --violet:#a994f5; --violet-soft:#2a2448;
+  --good:#6fcf6a; --bad:#ff7a6e; --shadow:0 2px 0 rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#151b14; --surface:#1e261c; --fg:#eef3e8; --muted:#a8b6a0; --line:#334030;
+  --leaf:#6fcf6a; --leaf-soft:#22361f; --wheat:#f2bd45; --wheat-soft:#3a2f14;
+  --soil:#e0a072; --soil-soft:#3a2a1e; --sky:#6cbcf0; --sky-soft:#17304a;
+  --berry:#f07aa3; --berry-soft:#3d1d29; --violet:#a994f5; --violet-soft:#2a2448;
+  --good:#6fcf6a; --bad:#ff7a6e; --shadow:0 2px 0 rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25); color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.6}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--display);line-height:1.15;text-wrap:balance;margin:0}
+h2{font-size:clamp(1.8rem,4vw,2.5rem);font-weight:800}
+h3{font-size:1.3rem;font-weight:700}
+p{margin:0}
+.lead{font-size:1.08rem;color:var(--muted);max-width:65ch}
+b.k,.kw{background:var(--wheat-soft);color:var(--fg);padding:0 .3em;border-radius:4px;font-weight:800}
+
+/* hero */
+.hero{background:linear-gradient(180deg,var(--sky-soft),var(--bg));padding-block:36px 8px;overflow:hidden}
+.hero-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:24px;align-items:center}
+.chip{display:inline-block;font-size:.78rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--leaf);background:var(--leaf-soft);padding:4px 12px;border-radius:99px}
+.hero h1{font-size:clamp(2.3rem,6vw,3.8rem);font-weight:800;margin-block:10px 12px}
+.hero h1 span{color:var(--leaf)}
+.hero h1 em{font-style:normal;color:var(--wheat)}
+.hero svg{width:100%;height:auto}
+.stats{display:flex;flex-wrap:wrap;gap:12px;margin-top:18px}
+.stat{background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:10px 14px;min-width:0}
+.stat b{display:block;font-family:var(--display);font-size:1.5rem;color:var(--soil);line-height:1}
+.stat small{color:var(--muted);font-weight:600}
+
+/* nav */
+nav.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);border-bottom:2px solid var(--line)}
+nav.top .wrap{display:flex;gap:6px;overflow-x:auto;padding-block:8px;scrollbar-width:none}
+nav.top a{flex:none;text-decoration:none;color:var(--fg);font-weight:800;font-size:.9rem;padding:6px 12px;border-radius:99px;border:2px solid transparent}
+nav.top a:hover,nav.top a.on{border-color:var(--leaf);color:var(--leaf)}
+
+section{padding-block:44px;border-bottom:2px dashed var(--line)}
+.sec-head{display:flex;gap:14px;align-items:flex-start;margin-bottom:22px}
+.badge{flex:none;width:54px;height:54px;border-radius:16px;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:1.1rem;color:#fff}
+.sec-head p{margin-top:6px}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.card{background:var(--surface);border:2px solid var(--line);border-radius:18px;padding:18px;min-width:0}
+.card h3{margin-bottom:6px}
+.card.c-leaf{border-color:var(--leaf);background:var(--leaf-soft)}
+.card.c-wheat{border-color:var(--wheat);background:var(--wheat-soft)}
+.card.c-soil{border-color:var(--soil);background:var(--soil-soft)}
+.card.c-sky{border-color:var(--sky);background:var(--sky-soft)}
+.card.c-berry{border-color:var(--berry);background:var(--berry-soft)}
+.card.c-violet{border-color:var(--violet);background:var(--violet-soft)}
+.card ul{margin:6px 0 0;padding-left:1.2em}
+.card li{margin-bottom:4px}
+.tag{display:inline-block;font-size:.75rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.remember{margin-top:18px;border-left:6px solid var(--berry);background:var(--berry-soft);border-radius:0 14px 14px 0;padding:12px 16px}
+.remember b{color:var(--berry)}
+
+/* buttons */
+button{font:inherit;cursor:pointer}
+.btn{border:2px solid var(--fg);background:var(--surface);color:var(--fg);font-weight:800;border-radius:12px;padding:8px 14px}
+.btn.primary{background:var(--leaf);border-color:var(--leaf);color:#fff}
+:focus-visible{outline:3px solid var(--sky);outline-offset:2px}
+.seg{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.seg button{border:2px solid var(--line);background:var(--surface);color:var(--fg);font-weight:800;border-radius:99px;padding:6px 14px}
+.seg button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+
+/* season */
+.months{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:3px;margin-block:10px 4px}
+.months div{text-align:center;font-size:.72rem;font-weight:800;padding:8px 0;border-radius:6px}
+.m-k{background:var(--sky);color:#fff}.m-r{background:var(--wheat);color:#2a1d00}.m-n{background:var(--line);color:var(--muted)}
+.sorter{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.crop{border:2px solid var(--line);background:var(--surface);color:var(--fg);border-radius:99px;padding:6px 12px;font-weight:700}
+.crop.k{border-color:var(--sky);background:var(--sky-soft)}
+.crop.r{border-color:var(--wheat);background:var(--wheat-soft)}
+.crop.wrong{border-color:var(--bad);border-style:dashed}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.9rem;font-weight:700;color:var(--muted)}
+.dot{display:inline-block;width:12px;height:12px;border-radius:4px;vertical-align:-1px;margin-right:5px}
+
+/* nutrients */
+.ptable{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:8px}
+.el{border:2px solid var(--line);border-radius:12px;padding:8px 4px;text-align:center;background:var(--surface);color:var(--fg)}
+.el b{display:block;font-family:var(--display);font-size:1.5rem;line-height:1}
+.el small{font-size:.7rem;font-weight:700}
+.el.air{border-color:var(--sky)}.el.water{border-color:var(--violet)}.el.macro{border-color:var(--leaf);background:var(--leaf-soft)}.el.micro{border-color:var(--wheat);background:var(--wheat-soft)}
+.el[aria-pressed="true"]{outline:3px solid var(--fg)}
+.info{margin-top:12px;min-height:3.2em;padding:12px 14px;border-radius:12px;background:var(--surface);border:2px dashed var(--line);font-weight:600}
+
+/* table */
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left}
+th{font-family:var(--display);font-size:1rem;background:var(--soil-soft)}
+
+/* fields svg */
+.field svg{width:100%;height:auto;border-radius:14px;display:block}
+.pond{position:relative}
+.pond svg{width:100%;height:auto;display:block;border-radius:18px}
+.fishlist{display:grid;gap:8px}
+.fish{display:flex;gap:10px;align-items:center;border:2px solid var(--line);background:var(--surface);color:var(--fg);border-radius:12px;padding:8px 12px;text-align:left;font-weight:700}
+.fish .dot{width:16px;height:16px;border-radius:50%}
+.fish[aria-pressed="true"]{border-color:var(--fg)}
+.zone{transition:opacity .25s}
+
+/* bars */
+.bars{display:grid;gap:10px}
+.bar{display:grid;grid-template-columns:90px 1fr 56px;gap:10px;align-items:center;font-weight:700}
+.bar .track{background:var(--line);border-radius:99px;height:18px;overflow:hidden}
+.bar .fill{height:100%;border-radius:99px;transition:width .5s}
+.bar span:last-child{text-align:right;font-variant-numeric:tabular-nums}
+
+/* flip cards */
+.search{width:100%;max-width:420px;font:inherit;padding:10px 14px;border-radius:12px;border:2px solid var(--line);background:var(--surface);color:var(--fg);margin-bottom:16px}
+.flips{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.flip{perspective:900px;height:170px;border:0;background:none;padding:0;color:var(--fg);text-align:left}
+.flip .in{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+.flip.open .in{transform:rotateY(180deg)}
+.flip .f,.flip .b{position:absolute;inset:0;backface-visibility:hidden;border-radius:16px;padding:14px;display:flex;flex-direction:column;justify-content:center;border:2px solid var(--line)}
+.flip .f{background:var(--surface)}
+.flip .f b{font-family:var(--display);font-size:1.3rem;line-height:1.1}
+.flip .f small{color:var(--muted);font-weight:700;margin-top:6px}
+.flip .b{transform:rotateY(180deg);background:var(--leaf-soft);border-color:var(--leaf);font-size:.92rem;font-weight:600;overflow:auto}
+
+/* quiz */
+.quiz{max-width:720px}
+.qprog{height:10px;background:var(--line);border-radius:99px;overflow:hidden;margin-bottom:14px}
+.qprog div{height:100%;background:var(--leaf);transition:width .3s}
+.opts{display:grid;gap:8px;margin-top:12px}
+.opt{border:2px solid var(--line);background:var(--surface);color:var(--fg);text-align:left;border-radius:12px;padding:10px 14px;font-weight:700}
+.opt:hover:not(:disabled){border-color:var(--sky)}
+.opt.ok{border-color:var(--good);background:var(--leaf-soft)}
+.opt.no{border-color:var(--bad);background:var(--berry-soft)}
+.why{margin-top:12px;font-weight:600}
+.qfoot{display:flex;justify-content:space-between;align-items:center;margin-top:14px;gap:10px;flex-wrap:wrap}
+
+details{background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:12px 16px;margin-bottom:10px}
+summary{font-weight:800;cursor:pointer}
+details p,details ul{margin-top:8px}
+
+@media (max-width:760px){.hero-grid,.g2,.g3{grid-template-columns:1fr}.bar{grid-template-columns:70px 1fr 50px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+<style>html,body{margin:0}</style>
+</head>
+<body>
+
+
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="chip">Class 9 Science · Chapter 15</span>
+      <h1>Improvement in <span>Food</span> <em>Resources</em></h1>
+      <p class="lead">India has more than a billion people and very little extra land to farm. So we must grow <b>more food from the same land</b>, without harming the soil, water and environment.</p>
+      <div class="stats">
+        <div class="stat"><b>4×</b><small>food grain production, 1952→2010</small></div>
+        <div class="stat"><b>25%</b><small>increase in cultivable land</small></div>
+        <div class="stat"><b>¼ billion t</b><small>grain needed every year</small></div>
+      </div>
+    </div>
+    <svg viewBox="0 0 400 280" role="img" aria-label="Farm with field, cow, fish pond and beehive">
+      <circle cx="330" cy="60" r="34" fill="var(--wheat)"/>
+      <path d="M0 170 Q100 120 200 160 T400 150 V280 H0Z" fill="var(--leaf)" opacity=".85"/>
+      <path d="M0 210 Q120 175 260 205 T400 200 V280 H0Z" fill="var(--soil)" opacity=".85"/>
+      <g stroke="var(--wheat)" stroke-width="3" stroke-linecap="round">
+        <path d="M30 215v-30M50 212v-34M70 210v-30M90 210v-34M110 211v-30M130 212v-34"/>
+      </g>
+      <g fill="var(--wheat)"><ellipse cx="30" cy="182" rx="4" ry="9"/><ellipse cx="50" cy="176" rx="4" ry="9"/><ellipse cx="70" cy="178" rx="4" ry="9"/><ellipse cx="90" cy="174" rx="4" ry="9"/><ellipse cx="110" cy="179" rx="4" ry="9"/><ellipse cx="130" cy="176" rx="4" ry="9"/></g>
+      <ellipse cx="300" cy="240" rx="80" ry="22" fill="var(--sky)"/>
+      <path d="M285 240q12-10 24 0q-12 10-24 0zM309 240l8-6v12z" fill="var(--surface)"/>
+      <g transform="translate(190 140)">
+        <rect x="0" y="0" width="70" height="36" rx="16" fill="var(--surface)" stroke="var(--fg)" stroke-width="3"/>
+        <circle cx="22" cy="14" r="7" fill="var(--fg)"/><circle cx="48" cy="22" r="6" fill="var(--fg)"/>
+        <rect x="62" y="-10" width="26" height="22" rx="9" fill="var(--surface)" stroke="var(--fg)" stroke-width="3"/>
+        <path d="M8 36v18M22 36v18M50 36v18M62 36v18" stroke="var(--fg)" stroke-width="4" stroke-linecap="round"/>
+      </g>
+      <g transform="translate(330 120)">
+        <rect x="0" y="20" width="44" height="40" rx="4" fill="var(--wheat)" stroke="var(--soil)" stroke-width="3"/>
+        <path d="M-4 22h52l-26-20z" fill="var(--soil)"/>
+        <circle cx="-14" cy="10" r="5" fill="var(--wheat)"/><path d="M-14 3l4 3" stroke="var(--fg)" stroke-width="2"/>
+      </g>
+    </svg>
+  </div>
+</header>
+
+<nav class="top" aria-label="Chapter sections">
+  <div class="wrap">
+    <a href="index.html" style="background:var(--fg);color:var(--bg)">&larr; All chapters</a><a href="#why">Why improve?</a><a href="#variety">Crop variety</a><a href="#nutrients">Nutrients</a><a href="#manure">Manure &amp; fertilizer</a><a href="#irrigation">Irrigation</a><a href="#patterns">Cropping patterns</a><a href="#protect">Protection &amp; storage</a><a href="#cattle">Cattle &amp; poultry</a><a href="#fish">Fish</a><a href="#bees">Bees</a><a href="#keywords">Keywords</a><a href="#quiz">Quiz</a><a href="#exercises">Exercises</a>
+  </div>
+</nav>
+
+<main>
+<!-- WHY -->
+<section id="why"><div class="wrap">
+  <div class="sec-head"><div class="badge" style="background:var(--sky)">Intro</div><div><h2>Why improve food production?</h2><p class="lead">Food gives us <b>proteins, carbohydrates, fats, vitamins and minerals</b>. We get most of it from <span class="kw">agriculture</span> and <span class="kw">animal husbandry</span>.</p></div></div>
+  <div class="grid g3">
+    <div class="card c-sky"><h3>Green Revolution</h3><p>Increased <b>food-grain</b> production.</p></div>
+    <div class="card"><h3>White Revolution</h3><p>Better and more efficient use and availability of <b>milk</b>.</p></div>
+    <div class="card c-leaf"><h3>Sustainable practices</h3><p>Grow more food <b>without degrading</b> the environment.</p></div>
+  </div>
+  <div class="grid g2" style="margin-top:16px">
+    <div class="card"><span class="tag">Food security depends on</span><h3>Availability + Access</h3><p>Storing grain in warehouses is not enough. People need <b>money to buy food</b>, so farmers' incomes must rise.</p></div>
+    <div class="card"><span class="tag">For sustained livelihood</span><h3>Mixed &amp; integrated farming</h3><p>Combine agriculture with <b>livestock, poultry, fisheries and bee-keeping</b>. Also use <b>intercropping</b>.</p></div>
+  </div>
+  <h3 style="margin-top:26px">What do different crops give us?</h3>
+  <div class="seg" id="cropSeg" style="margin-top:10px">
+    <button aria-pressed="true" data-k="cereal">Cereals</button><button aria-pressed="false" data-k="pulse">Pulses</button><button aria-pressed="false" data-k="oil">Oil seeds</button><button aria-pressed="false" data-k="veg">Vegetables, spices, fruits</button><button aria-pressed="false" data-k="fodder">Fodder crops</button>
+  </div>
+  <div class="card c-wheat" id="cropOut" aria-live="polite"></div>
+</div></section>
+
+<!-- SEASONS + VARIETY -->
+<section id="variety"><div class="wrap">
+  <div class="sec-head"><div class="badge" style="background:var(--leaf)">15.1</div><div><h2>Improvement in crop yields</h2><p class="lead">Farming has three stages: choosing seeds, nurturing crop plants, and protecting crops from loss. So there are three groups of activities.</p></div></div>
+  <div class="grid g3">
+    <div class="card c-leaf"><span class="tag">Stage 1 · seeds</span><h3>Crop variety improvement</h3></div>
+    <div class="card c-wheat"><span class="tag">Stage 2 · nurturing</span><h3>Crop production improvement</h3></div>
+    <div class="card c-berry"><span class="tag">Stage 3 · protection</span><h3>Crop protection management</h3></div>
+  </div>
+
+  <div class="card" style="margin-top:22px">
+    <h3>Kharif vs Rabi seasons</h3>
+    <p>Crops need the right climate, temperature and <span class="kw">photoperiod</span> (duration of sunlight), which controls growth and flowering.</p>
+    <div class="months" aria-hidden="true">
+      <div class="m-r">Jan</div><div class="m-r">Feb</div><div class="m-r">Mar</div><div class="m-r">Apr</div><div class="m-n">May</div><div class="m-k">Jun</div><div class="m-k">Jul</div><div class="m-k">Aug</div><div class="m-k">Sep</div><div class="m-k">Oct</div><div class="m-r">Nov</div><div class="m-r">Dec</div>
+    </div>
+    <div class="legend"><span><i class="dot" style="background:var(--sky)"></i>Kharif · rainy season · June–October</span><span><i class="dot" style="background:var(--wheat)"></i>Rabi · winter · November–April</span></div>
+    <p style="margin-top:14px;font-weight:700">Game: tap a crop to cycle Kharif → Rabi → unsorted, then press Check.</p>
+    <div class="sorter" id="sorter"></div>
+    <div class="qfoot"><span id="sortMsg" aria-live="polite" style="font-weight:800"></span><span><button class="btn" id="sortReset">Reset</button> <button class="btn primary" id="sortCheck">Check</button></span></div>
+  </div>
+
+  <h3 style="margin-top:28px">15.1.1 Crop variety improvement</h3>
+  <p class="lead" style="margin-top:6px">Find a variety that gives a good yield. Desirable characters are added by <span class="kw">hybridisation</span> (crossing genetically dissimilar plants) or by adding a gene, which gives <span class="kw">genetically modified (GM) crops</span>.</p>
+  <div class="grid g3" style="margin-top:14px">
+    <div class="card c-leaf"><span class="tag">Intervarietal</span><h3>Variety × Variety</h3><p>Between different varieties of the same crop.</p></div>
+    <div class="card c-sky"><span class="tag">Interspecific</span><h3>Species × Species</h3><p>Between two different species of the <b>same genus</b>.</p></div>
+    <div class="card c-violet"><span class="tag">Intergeneric</span><h3>Genus × Genus</h3><p>Between <b>different genera</b>.</p></div>
+  </div>
+  <h3 style="margin-top:22px">Six factors for variety improvement</h3>
+  <p style="color:var(--muted);font-weight:700">Tap each card to reveal the detail.</p>
+  <div class="flips" style="margin-top:10px" id="factors"></div>
+  <div class="remember"><b>Remember:</b> For a new variety to be accepted, it must give high yields in different areas, and farmers need good quality seeds that are all the same variety and germinate under the same conditions.</div>
+</div></section>
+
+<!-- NUTRIENTS -->
+<section id="nutrients"><div class="wrap">
+  <div class="sec-head"><div class="badge" style="background:var(--wheat)">15.1.2</div><div><h2>Crop production management: nutrients</h2><p class="lead">Production practices depend on the farmer's money: <b>no cost</b>, <b>low cost</b> and <b>high cost</b>. Higher inputs usually give higher yields. Plants need <b>16 essential nutrients</b> from air, water and soil.</p></div></div>
+  <div class="legend" style="margin-bottom:10px"><span><i class="dot" style="background:var(--sky)"></i>Air</span><span><i class="dot" style="background:var(--violet)"></i>Water</span><span><i class="dot" style="background:var(--leaf)"></i>Soil · macronutrient (6)</span><span><i class="dot" style="background:var(--wheat)"></i>Soil · micronutrient (7)</span></div>
+  <div class="ptable" id="ptable"></div>
+  <div class="info" id="elInfo" aria-live="polite">Tap any nutrient to see where it comes from.</div>
+  <div class="grid g2" style="margin-top:16px">
+    <div class="card c-leaf"><h3>Macro-nutrients</h3><p>Needed in <b>large quantities</b>: N, P, K, Ca, Mg, S.</p></div>
+    <div class="card c-wheat"><h3>Micro-nutrients</h3><p>Needed in <b>small quantities</b>: Fe, Mn, B, Zn, Cu, Mo, Cl.</p></div>
+  </div>
+  <div class="remember"><b>Trick:</b> Air gives C and O. Water gives H (and O). Soil gives the other 13. Deficiency affects reproduction, growth and makes plants more likely to get diseases.</div>
+</div></section>
+
+<!-- MANURE -->
+<section id="manure"><div class="wrap">
+  <div class="sec-head"><div class="badge" style="background:var(--soil)">15.1.2</div><div><h2>Manure vs fertilizers</h2><p class="lead">Both supply nutrients to the soil, but they work very differently.</p></div></div>
+  <div class="tbl card" style="padding:0">
+    <table>
+      <thead><tr><th>Point</th><th>Manure</th><th>Fertilizer</th></tr></thead>
+      <tbody>
+        <tr><td><b>Made from</b></td><td>Decomposed animal excreta and plant waste</td><td>Commercially produced chemicals</td></tr>
+        <tr><td><b>Organic matter</b></td><td>Large amount</td><td>None</td></tr>
+        <tr><td><b>Nutrients</b></td><td>Small amounts</td><td>Rich in N, P, K</td></tr>
+        <tr><td><b>Soil structure</b></td><td>Improves it: holds water in sandy soil, drains clayey soil</td><td>Does not improve it</td></tr>
+        <tr><td><b>Long-term effect</b></td><td>Keeps soil fertile, recycles farm waste</td><td>Continuous use destroys soil fertility, harms soil microbes</td></tr>
+        <tr><td><b>Pollution</b></td><td>Eco-friendly</td><td>Excess washes away and causes water pollution</td></tr>
+        <tr><td><b>Benefit</b></td><td>Long-term</td><td>Short-term, quick vegetative growth</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <h3 style="margin-top:22px">Types of manure</h3>
+  <div class="grid g3" style="margin-top:10px">
+    <div class="card c-soil"><span class="tag">Type (i)</span><h3>Compost</h3><p>Farm waste (cow dung, vegetable waste, straw, weeds, sewage) <b>decomposed in pits</b>.</p></div>
+    <div class="card c-wheat"><span class="tag">Type (i)</span><h3>Vermi-compost</h3><p>Compost made using <b>earthworms</b> to speed up decomposition.</p></div>
+    <div class="card c-leaf"><span class="tag">Type (ii)</span><h3>Green manure</h3><p>Plants like <b>sun hemp</b> or <b>guar</b> are grown and ploughed into the soil. Adds nitrogen and phosphorus.</p></div>
+  </div>
+  <div class="card c-sky" style="margin-top:16px">
+    <h3>Organic farming</h3>
+    <p>Minimal or no chemicals. Uses organic manures, recycled farm waste, <b>bio-agents</b> like blue-green algae (biofertilizer), <b>neem leaves or turmeric</b> as bio-pesticides in grain storage, plus mixed cropping, intercropping and crop rotation.</p>
+  </div>
+</div></section>
+
+<!-- IRRIGATION -->
+<section id="irrigation"><div class="wrap">
+  <div class="sec-head"><div class="badge" style="background:var(--sky)">15.1.2</div><div><h2>Irrigation</h2><p class="lead">Most Indian farming is <span class="kw">rain-fed</span>, so a poor monsoon means crop failure. Giving water at the right stages raises yield.</p></div></div>
+  <div class="grid g2">
+    <div class="card c-sky"><h3>Wells</h3><ul><li><b>Dug wells</b>: water from water-bearing strata.</li><li><b>Tube wells</b>: tap deeper strata.</li><li>Water lifted by pumps.</li></ul></div>
+    <div class="card c-sky"><h3>Canals</h3><p>Elaborate system. Water from reservoirs or rivers flows: <b>main canal → branch canals → distributaries</b> → fields.</p></div>
+    <div class="card c-sky"><h3>River lift systems</h3><p>Water drawn <b>directly from rivers</b> where canal flow is low. Used in areas close to rivers.</p></div>
+    <div class="card c-sky"><h3>Tanks</h3><p>Small storage reservoirs that store run-off from <b>small catchment areas</b>.</p></div>
+  </div>
+  <div class="remember"><b>New ideas:</b> <span class="kw">Rainwater harvesting</span> and <span class="kw">watershed management</span>. Small <b>check-dams</b> raise ground water levels, stop rainwater flowing away and reduce soil erosion. Light soils hold less water, so crops there suffer more in droughts.</div>
+</div></section>
+
+<!-- PATTERNS -->
+<section id="patterns"><div class="wrap">
+  <div class="sec-head"><div class="badge" style="background:var(--leaf)">15.1.2</div><div><h2>Cropping patterns</h2><p class="lead">Three ways to grow crops for maximum benefit. Switch between them to see the field.</p></div></div>
+  <div class="seg" id="patSeg"><button aria-pressed="true" data-p="mixed">Mixed cropping</button><button aria-pressed="false" data-p="inter">Inter-cropping</button><button aria-pressed="false" data-p="rot">Crop rotation</button></div>
+  <div class="grid g2">
+    <div class="field card" style="padding:10px"><svg id="fieldSvg" viewBox="0 0 400 240" role="img" aria-label="Field diagram"></svg></div>
+    <div class="card" id="patText" aria-live="polite"></div>
+  </div>
+</div></section>
+
+<!-- PROTECTION -->
+<section id="protect"><div class="wrap">
+  <div class="sec-head"><div class="badge" style="background:var(--berry)">15.1.3</div><div><h2>Crop protection &amp; storage</h2><p class="lead">Weeds, insect pests and diseases can destroy most of a crop if not controlled in time.</p></div></div>
+  <div class="grid g3">
+    <div class="card c-berry"><h3>Weeds</h3><p>Unwanted plants that compete for food, space and light.</p><ul><li><i>Xanthium</i> (gokhroo)</li><li><i>Parthenium</i> (gajar ghas)</li><li><i>Cyperinus rotundus</i> (motha)</li></ul></div>
+    <div class="card c-wheat"><h3>Insect pests attack in 3 ways</h3><ul><li>Cut root, stem and leaf</li><li>Suck cell sap</li><li>Bore into stem and fruits</li></ul></div>
+    <div class="card c-violet"><h3>Diseases</h3><p>Caused by <b>bacteria, fungi and viruses</b>, spread through soil, water and air.</p></div>
+  </div>
+  <div class="grid g2" style="margin-top:16px">
+    <div class="card"><h3>Control methods</h3><ul><li><b>Pesticides</b>: herbicides, insecticides, fungicides. Overuse is poisonous and pollutes.</li><li><b>Mechanical removal</b> of weeds.</li><li><b>Preventive</b>: proper seed bed, timely sowing, intercropping, crop rotation, resistant varieties, <b>summer ploughing</b> (deep ploughing in summer kills weeds and pests).</li></ul></div>
+    <div class="card c-soil"><h3>Storage of grains</h3><p><b>Biotic</b> causes: insects, rodents, fungi, mites, bacteria.<br><b>Abiotic</b> causes: wrong moisture and temperature.</p><p style="margin-top:8px">Effects: poor quality, weight loss, poor germination, discolouration.</p><p style="margin-top:8px"><b>Prevention:</b> clean produce, dry it first in sun then in shade, and <b>fumigate</b>.</p></div>
+  </div>
+</div></section>
+
+<!-- CATTLE POULTRY -->
+<section id="cattle"><div class="wrap">
+  <div class="sec-head"><div class="badge" style="background:var(--soil)">15.2</div><div><h2>Animal husbandry</h2><p class="lead"><span class="kw">Animal husbandry</span> is the scientific management of livestock: feeding, breeding and disease control. It includes cattle, goat, sheep, poultry and fish farming.</p></div></div>
+
+  <h3>Nutrition in animal products (Table 15.2)</h3>
+  <div class="seg" id="nutSeg" style="margin-top:10px"><button aria-pressed="true" data-n="1">Protein</button><button aria-pressed="false" data-n="0">Fat</button><button aria-pressed="false" data-n="3">Minerals</button><button aria-pressed="false" data-n="4">Water</button></div>
+  <div class="card"><div class="bars" id="bars"></div><p id="vit" style="margin-top:12px;color:var(--muted);font-weight:700"></p></div>
+
+  <h3 style="margin-top:26px">15.2.1 Cattle farming</h3>
+  <div class="grid g2" style="margin-top:10px">
+    <div class="card c-soil"><h3>Two species, two purposes</h3><p><i>Bos indicus</i> = cows · <i>Bos bubalis</i> = buffaloes</p><ul><li><b>Milch animals</b>: milk-producing females (dairy).</li><li><b>Draught animals</b>: farm labour like tilling, irrigation, carting.</li></ul></div>
+    <div class="card c-wheat"><h3>Cross-breeding</h3><p><b>Exotic</b> (Jersey, Brown Swiss) → long <span class="kw">lactation period</span><br><b>Local</b> (Red Sindhi, Sahiwal) → disease resistance</p><p style="margin-top:6px">Cross them to get <b>both</b> qualities.</p></div>
+    <div class="card"><h3>Food &amp; shelter</h3><ul><li>Food: <b>maintenance</b> requirement + <b>milk-producing</b> requirement.</li><li>Feed: <b>roughage</b> (mostly fibre) + <b>concentrates</b> (low fibre, high protein).</li><li>Well-ventilated roofed shed, sloping floor, regular brushing.</li></ul></div>
+    <div class="card c-berry"><h3>Diseases</h3><ul><li><b>External parasites</b> live on skin, cause skin disease.</li><li><b>Internal parasites</b>: worms (stomach, intestine), flukes (liver).</li><li>Bacteria and viruses → <b>vaccination</b>.</li></ul></div>
+  </div>
+
+  <h3 style="margin-top:26px">15.2.2 Poultry farming</h3>
+  <div class="grid g2" style="margin-top:10px">
+    <div class="card c-wheat"><h3>Layers vs Broilers</h3><p><b>Layers</b> → eggs<br><b>Broilers</b> → meat. Fed vitamin-rich, protein-rich feed with adequate fat; high vitamins A and K.</p></div>
+    <div class="card c-leaf"><h3>Cross-breeding</h3><p>Indian <b>Aseel</b> × foreign <b>Leghorn</b>, for:</p><ul><li>More and better chicks</li><li>Dwarf broiler parent</li><li>Tolerance to high temperature</li><li>Low maintenance</li><li>Smaller layer that eats cheap fibrous diet</li></ul></div>
+  </div>
+  <div class="remember"><b>Common in dairy and poultry:</b> clean shelter, balanced feed, hygiene, disinfectants and vaccination.</div>
+</div></section>
+
+<!-- FISH -->
+<section id="fish"><div class="wrap">
+  <div class="sec-head"><div class="badge" style="background:var(--sky)">15.2.3</div><div><h2>Fish production</h2><p class="lead">Fish is a cheap source of animal protein. It includes finned <b>true fish</b> and <b>shellfish</b> like prawns and molluscs.</p></div></div>
+  <div class="grid g3">
+    <div class="card c-sky"><span class="tag">From nature</span><h3>Capture fishing</h3><p>Catching fish from natural sources. Marine fish (pomphret, mackerel, tuna, sardines, Bombay duck) are located using <b>satellites and echo-sounders</b>. India has 7500 km of coastline.</p></div>
+    <div class="card c-violet"><span class="tag">Farming in sea</span><h3>Mariculture</h3><p>Culture of marine fish: mullets, bhetki, pearl spots, prawns, mussels, oysters (also for pearls), seaweed.</p></div>
+    <div class="card c-leaf"><span class="tag">Farming inland</span><h3>Aquaculture</h3><p>Culture in fresh water (ponds, rivers) and brackish water (estuaries, lagoons). Sometimes with a <b>rice crop</b>.</p></div>
+  </div>
+
+  <h3 style="margin-top:26px">Composite fish culture</h3>
+  <p class="lead" style="margin-top:6px">5 or 6 species in one pond, each eating in a different zone, so they <b>don't compete</b> and all the food is used. Tap a fish.</p>
+  <div class="grid g2" style="margin-top:14px">
+    <div class="pond">
+      <svg viewBox="0 0 400 300" role="img" aria-label="Pond with feeding zones">
+        <rect width="400" height="300" fill="var(--sky-soft)"/>
+        <rect class="zone" id="z-surface" x="0" y="0" width="400" height="90" fill="var(--sky)" opacity=".35"/>
+        <rect class="zone" id="z-middle" x="0" y="90" width="400" height="100" fill="var(--sky)" opacity=".55"/>
+        <rect class="zone" id="z-bottom" x="0" y="190" width="400" height="110" fill="var(--sky)" opacity=".8"/>
+        <path d="M0 270 Q100 255 200 272 T400 265 V300 H0Z" fill="var(--soil)"/>
+        <g id="z-weeds" class="zone" stroke="var(--leaf)" stroke-width="5" fill="none" stroke-linecap="round"><path d="M340 280 Q330 230 345 180"/><path d="M360 282 Q372 230 358 200"/><path d="M30 280 Q20 240 35 210"/></g>
+        <g font-family="Mulish,sans-serif" font-weight="800" font-size="13" fill="var(--fg)"><text x="12" y="22">Surface</text><text x="12" y="112">Middle zone</text><text x="12" y="212">Bottom</text></g>
+        <g id="fishes"></g>
+      </svg>
+    </div>
+    <div class="fishlist" id="fishlist"></div>
+  </div>
+  <div class="remember"><b>Problem:</b> many of these fish breed only in the monsoon, and wild seed gets mixed. <b>Solution:</b> breeding in ponds using <span class="kw">hormonal stimulation</span> gives pure fish seed.</div>
+</div></section>
+
+<!-- BEES -->
+<section id="bees"><div class="wrap">
+  <div class="sec-head"><div class="badge" style="background:var(--wheat)">15.2.4</div><div><h2>Bee-keeping</h2><p class="lead">Low investment, so farmers do it for extra income. Gives <b>honey</b> and <b>wax</b> (used in medicines). Bee farms are called <span class="kw">apiaries</span>.</p></div></div>
+  <div class="grid g2">
+    <div class="card c-wheat"><span class="tag">Local varieties</span><ul><li><i>Apis cerana indica</i> · Indian bee</li><li><i>A. dorsata</i> · rock bee</li><li><i>A. florae</i> · little bee</li></ul></div>
+    <div class="card c-leaf"><span class="tag">Italian bee · <i>A. mellifera</i></span><ul><li>High honey collection</li><li>Stings less</li><li>Stays long in one hive</li><li>Breeds very well</li></ul></div>
+  </div>
+  <div class="remember"><b>Pasturage:</b> the flowers available to bees for nectar and pollen. The amount decides <b>how much</b> honey; the kind of flowers decides its <b>taste</b>.</div>
+</div></section>
+
+<!-- KEYWORDS -->
+<section id="keywords"><div class="wrap">
+  <div class="sec-head"><div class="badge" style="background:var(--violet)">Aa</div><div><h2>Keyword flashcards</h2><p class="lead">Say the meaning aloud, then tap to check.</p></div></div>
+  <label for="kwSearch" class="tag">Search a keyword</label>
+  <input id="kwSearch" class="search" type="search" placeholder="e.g. rabi, lactation, apiary">
+  <div class="flips" id="kwGrid"></div>
+</div></section>
+
+<!-- QUIZ -->
+<section id="quiz"><div class="wrap">
+  <div class="sec-head"><div class="badge" style="background:var(--leaf)">Quiz</div><div><h2>Quick check</h2><p class="lead">12 questions from the whole chapter.</p></div></div>
+  <div class="card quiz" id="quizBox"></div>
+</div></section>
+
+<!-- EXERCISES -->
+<section id="exercises" style="border-bottom:0"><div class="wrap">
+  <div class="sec-head"><div class="badge" style="background:var(--soil)">Ex</div><div><h2>NCERT exercises · answer points</h2><p class="lead">Key points to cover in each answer.</p></div></div>
+  <div id="exList"></div>
+</div></section>
+</main>
+
+<script>
+const $=s=>document.querySelector(s);
+function seg(id,cb){const el=$(id);el.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;el.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));cb(b.dataset)});}
+
+/* crops */
+const crops={cereal:['Cereals → Carbohydrates (energy)','Wheat, rice, maize, millets, sorghum'],pulse:['Pulses → Protein','Gram (chana), pea (matar), black gram (urad), green gram (moong), pigeon pea (arhar), lentil (masoor)'],oil:['Oil seeds → Fats','Soyabean, groundnut, sesame, castor, mustard, linseed, sunflower'],veg:['Vegetables, spices & fruits → Vitamins & minerals','Plus small amounts of proteins, carbohydrates and fats'],fodder:['Fodder crops → Food for livestock','Berseem, oats, sudan grass']};
+function showCrop(k){$('#cropOut').innerHTML=`<h3>${crops[k][0]}</h3><p>${crops[k][1]}</p>`}
+showCrop('cereal');seg('#cropSeg',d=>showCrop(d.k));
+
+/* sorter */
+const sortCrops=[['Paddy','k'],['Wheat','r'],['Soyabean','k'],['Gram','r'],['Maize','k'],['Peas','r'],['Cotton','k'],['Mustard','r'],['Pigeon pea','k'],['Linseed','r'],['Green gram','k'],['Black gram','k']];
+let st={};
+function drawSort(check){$('#sorter').innerHTML=sortCrops.map(([n,a],i)=>{const v=st[i]||'';const w=check&&v!==a?' wrong':'';return `<button class="crop ${v}${w}" data-i="${i}">${n}${v?' · '+(v==='k'?'Kharif':'Rabi'):''}</button>`}).join('')}
+$('#sorter').addEventListener('click',e=>{const b=e.target.closest('.crop');if(!b)return;const i=b.dataset.i;st[i]=st[i]===undefined||st[i]===''?'k':st[i]==='k'?'r':'';drawSort();$('#sortMsg').textContent=''});
+$('#sortCheck').onclick=()=>{const ok=sortCrops.filter(([n,a],i)=>st[i]===a).length;drawSort(true);$('#sortMsg').textContent=ok===12?'All 12 correct!':`${ok} / 12 correct. Dashed ones need fixing.`};
+$('#sortReset').onclick=()=>{st={};drawSort();$('#sortMsg').textContent=''};
+drawSort();
+
+/* flip helper */
+function flips(el,items){el.innerHTML=items.map(([t,s,b])=>`<button class="flip" aria-label="${t}"><div class="in"><div class="f"><b>${t}</b>${s?`<small>${s}</small>`:''}</div><div class="b">${b}</div></div></button>`).join('');}
+document.addEventListener('click',e=>{const f=e.target.closest('.flip');if(f)f.classList.toggle('open')});
+
+flips($('#factors'),[
+ ['Higher yield','Tap to reveal','To increase the productivity of the crop per acre.'],
+ ['Improved quality','Tap to reveal','Baking quality in wheat, protein in pulses, oil in oilseeds, preserving quality in fruits and vegetables.'],
+ ['Biotic & abiotic resistance','Tap to reveal','Biotic: diseases, insects, nematodes. Abiotic: drought, salinity, water logging, heat, cold, frost.'],
+ ['Change in maturity duration','Tap to reveal','Shorter duration → cheaper, more crop rounds per year. Uniform maturity → easy harvesting, less loss.'],
+ ['Wider adaptability','Tap to reveal','One variety can grow in different climates and areas, stabilising production.'],
+ ['Desirable agronomic characters','Tap to reveal','Tallness and branching for fodder crops; dwarfness in cereals so less nutrients are used.']
+]);
+
+/* nutrients */
+const els=[['C','Carbon','air'],['O','Oxygen','air'],['H','Hydrogen','water'],['N','Nitrogen','macro'],['P','Phosphorus','macro'],['K','Potassium','macro'],['Ca','Calcium','macro'],['Mg','Magnesium','macro'],['S','Sulphur','macro'],['Fe','Iron','micro'],['Mn','Manganese','micro'],['B','Boron','micro'],['Zn','Zinc','micro'],['Cu','Copper','micro'],['Mo','Molybdenum','micro'],['Cl','Chlorine','micro']];
+const src={air:'comes from AIR.',water:'comes from WATER.',macro:'comes from SOIL. It is a MACRO-nutrient (needed in large quantity).',micro:'comes from SOIL. It is a MICRO-nutrient (needed in small quantity).'};
+$('#ptable').innerHTML=els.map(([s,n,t])=>`<button class="el ${t}" aria-pressed="false" data-t="${t}" data-n="${n}"><b>${s}</b><small>${n}</small></button>`).join('');
+$('#ptable').addEventListener('click',e=>{const b=e.target.closest('.el');if(!b)return;$('#ptable').querySelectorAll('.el').forEach(x=>x.setAttribute('aria-pressed',x===b));$('#elInfo').textContent=`${b.dataset.n} ${src[b.dataset.t]}${b.dataset.n==='Oxygen'?' (Oxygen also comes from water.)':''}`});
+
+/* patterns */
+function rows(colors,h){let s='';const n=colors.length;const rh=200/n;colors.forEach((c,i)=>{for(let x=20;x<390;x+=30)s+=`<circle cx="${x}" cy="${30+i*rh+rh/2}" r="${Math.min(11,rh/2-2)}" fill="${c}"/>`});return s}
+const pats={
+ mixed:{svg:()=>{let s='<rect width="400" height="240" fill="var(--soil-soft)"/>';let seed=7;for(let i=0;i<70;i++){seed=(seed*9301+49297)%233280;const x=15+seed/233280*370;seed=(seed*9301+49297)%233280;const y=15+seed/233280*210;s+=`<circle cx="${x}" cy="${y}" r="9" fill="${i%2?'var(--wheat)':'var(--leaf)'}"/>`}return s},
+  t:'<span class="tag">Same land, same time, no pattern</span><h3>Mixed cropping</h3><p>Two or more crops grown together on the same piece of land.</p><p style="margin-top:8px"><b>Examples:</b> wheat + gram, wheat + mustard, groundnut + sunflower.</p><p style="margin-top:8px"><b>Benefit:</b> reduces risk. If one crop fails, the other gives some insurance.</p>'},
+ inter:{svg:()=>'<rect width="400" height="240" fill="var(--soil-soft)"/>'+rows(['var(--leaf)','var(--leaf)','var(--wheat)','var(--wheat)','var(--leaf)','var(--leaf)']),
+  t:'<span class="tag">Same field, same time, definite rows</span><h3>Inter-cropping</h3><p>A few rows of one crop alternate with a few rows of another.</p><p style="margin-top:8px"><b>Examples:</b> soyabean + maize, finger millet (bajra) + cowpea (lobia).</p><p style="margin-top:8px"><b>Benefit:</b> crops with different nutrient needs use soil fully, and pests and diseases cannot spread to all plants.</p>'},
+ rot:{svg:()=>{const c=['var(--sky)','var(--wheat)','var(--leaf)'],l=['Season 1: Paddy','Season 2: Wheat','Season 3: Pulses'];return '<rect width="400" height="240" fill="var(--soil-soft)"/>'+c.map((x,i)=>`<rect x="${14+i*128}" y="40" width="116" height="150" rx="14" fill="${x}" opacity=".85"/><text x="${72+i*128}" y="215" text-anchor="middle" font-family="Mulish,sans-serif" font-weight="800" font-size="12" fill="var(--fg)">${l[i]}</text>`).join('')+'<path d="M130 115h10M258 115h10" stroke="var(--fg)" stroke-width="4"/><path d="M140 108l8 7-8 7M268 108l8 7-8 7" fill="var(--fg)"/>'},
+  t:'<span class="tag">Same land, different crops one after another</span><h3>Crop rotation</h3><p>Growing different crops on a piece of land in a <b>pre-planned succession</b>.</p><p style="margin-top:8px">Moisture and irrigation decide which crop comes next.</p><p style="margin-top:8px"><b>Benefit:</b> done properly, 2 or 3 crops a year with good harvests; also helps control weeds and pests.</p>'}
+};
+function showPat(p){$('#fieldSvg').innerHTML=pats[p].svg();$('#patText').innerHTML=pats[p].t}
+showPat('mixed');seg('#patSeg',d=>showPat(d.p));
+
+/* nutrition bars */
+const prod=[['Milk (cow)',[3.6,4,4.5,.7,87.2],'B1, B2, B12, D, E','var(--sky)'],['Egg',[12,13,0,1,74],'B2, D','var(--wheat)'],['Meat',[3.6,21.1,0,1.1,74.2],'B2, B12','var(--berry)'],['Fish',[2.5,19,0,1.3,77.2],'Niacin, D, A','var(--leaf)']];
+function drawBars(n){n=+n;const max=Math.max(...prod.map(p=>p[1][n]));$('#bars').innerHTML=prod.map(p=>`<div class="bar"><span>${p[0]}</span><div class="track"><div class="fill" style="width:${p[1][n]/max*100}%;background:${p[3]}"></div></div><span>${p[1][n].toFixed(2)}%</span></div>`).join('');$('#vit').textContent='Vitamins · '+prod.map(p=>p[0]+': '+p[2]).join(' · ')}
+drawBars(1);seg('#nutSeg',d=>drawBars(d.n));
+
+/* fish */
+const fish=[['Catla','Surface feeder','surface',90,50,'var(--wheat)'],['Silver carp','Surface feeder','surface',260,60,'var(--violet)'],['Rohu','Middle-zone feeder','middle',200,140,'var(--berry)'],['Grass carp','Feeds on weeds','weeds',300,215,'var(--leaf)'],['Mrigal','Bottom feeder','bottom',110,240,'var(--soil)'],['Common carp','Bottom feeder','bottom',220,248,'var(--fg)']];
+$('#fishes').innerHTML=fish.map(([n,,,x,y,c],i)=>`<g data-i="${i}" style="cursor:pointer"><ellipse cx="${x}" cy="${y}" rx="26" ry="12" fill="${c}"/><path d="M${x+24} ${y}l14-10v20z" fill="${c}"/><circle cx="${x-14}" cy="${y-3}" r="3" fill="var(--surface)"/><text x="${x}" y="${y-18}" text-anchor="middle" font-family="Mulish,sans-serif" font-weight="800" font-size="12" fill="var(--fg)">${n}</text></g>`).join('');
+$('#fishlist').innerHTML=fish.map(([n,f,,,,c],i)=>`<button class="fish" data-i="${i}" aria-pressed="false"><i class="dot" style="background:${c}"></i><span><b>${n}</b> · ${f}</span></button>`).join('');
+function pickFish(i){const z=fish[i][2];['surface','middle','bottom','weeds'].forEach(k=>$('#z-'+k).style.opacity=k===z?1:.25);$('#fishlist').querySelectorAll('.fish').forEach((b,j)=>b.setAttribute('aria-pressed',j==i))}
+document.addEventListener('click',e=>{const g=e.target.closest('[data-i]');if(g&&(g.closest('#fishes')||g.closest('#fishlist')))pickFish(+g.dataset.i)});
+
+/* keywords */
+const kw=[['Animal husbandry','Scientific management of livestock: feeding, breeding, disease control.'],['Photoperiod','Duration of sunlight; affects growth and flowering.'],['Kharif','Rainy-season crops, June–October. E.g. paddy, maize, cotton, soyabean.'],['Rabi','Winter crops, November–April. E.g. wheat, gram, peas, mustard, linseed.'],['Hybridisation','Crossing genetically dissimilar plants (intervarietal, interspecific, intergeneric).'],['GM crop','Genetically modified crop: a gene is introduced to give a desired characteristic.'],['Biotic stress','Damage from living things: diseases, insects, nematodes.'],['Abiotic stress','Damage from non-living factors: drought, salinity, water logging, heat, cold, frost.'],['Macro-nutrients','Needed in large amounts: N, P, K, Ca, Mg, S.'],['Micro-nutrients','Needed in small amounts: Fe, Mn, B, Zn, Cu, Mo, Cl.'],['Manure','Decomposed animal excreta and plant waste; rich in organic matter.'],['Compost','Farm waste decomposed in pits.'],['Vermi-compost','Compost made using earthworms.'],['Green manure','Plants like sun hemp or guar ploughed into soil to add N and P.'],['Fertilizer','Commercially produced nutrients supplying N, P, K.'],['Organic farming','Farming with little or no chemicals; uses manures, bio-agents, bio-pesticides.'],['Mixed cropping','Two or more crops together on the same land.'],['Inter-cropping','Two or more crops in a definite row pattern.'],['Crop rotation','Different crops on the same land in pre-planned succession.'],['Weeds','Unwanted plants in a crop field, e.g. Parthenium.'],['Summer ploughing','Deep ploughing in summer to destroy weeds and pests.'],['Fumigation','Using chemicals to kill pests in stored grain.'],['Milch animals','Milk-producing females.'],['Draught animals','Animals used for farm labour.'],['Lactation period','Period of milk production after the birth of a calf.'],['Roughage','Animal feed that is largely fibre.'],['Concentrates','Low-fibre feed high in proteins and nutrients.'],['Layers','Poultry raised for eggs.'],['Broilers','Poultry raised for meat.'],['Capture fishing','Obtaining fish from natural resources.'],['Culture fishery','Fish farming.'],['Mariculture','Culture of marine fish in seawater.'],['Aquaculture','Fish culture in inland fresh or brackish water.'],['Composite fish culture','5–6 fish species in one pond with different feeding zones.'],['Apiary','A bee farm.'],['Pasturage','Flowers available to bees for nectar and pollen.'],['Check-dam','Small dam that stops rainwater flowing away and raises ground water.'],['Rain-fed farming','Farming that depends only on rainfall.']];
+function drawKw(q=''){q=q.toLowerCase();flips($('#kwGrid'),kw.filter(([t,d])=>(t+d).toLowerCase().includes(q)).map(([t,d])=>[t,'Tap to flip',d]))}
+drawKw();$('#kwSearch').addEventListener('input',e=>drawKw(e.target.value));
+
+/* quiz */
+const Q=[
+['Which of these is a rabi crop?',['Paddy','Maize','Wheat','Cotton'],2,'Wheat is sown in winter (November–April).'],
+['Pulses mainly give us…',['Carbohydrates','Proteins','Fats','Vitamins only'],1,'Gram, pea, moong, urad, arhar and masoor are rich in protein.'],
+['Crossing two different species of the same genus is…',['Intervarietal','Interspecific','Intergeneric','Mutation'],1,'Inter-specific = between species of one genus.'],
+['How many nutrients does soil supply?',['3','6','13','16'],2,'16 essential nutrients: C, O from air, H from water, 13 from soil.'],
+['Which one is a micro-nutrient?',['Nitrogen','Calcium','Zinc','Sulphur'],2,'Zinc is needed in small amounts.'],
+['Green manure plants include…',['Sun hemp and guar','Wheat and gram','Neem and turmeric','Berseem and oats'],0,'Sun hemp or guar are grown and ploughed into the soil.'],
+['Soyabean + maize grown in alternate rows is…',['Mixed cropping','Crop rotation','Inter-cropping','Organic farming'],2,'Definite row pattern = inter-cropping.'],
+['Parthenium is an example of a…',['Pest','Weed','Fungus','Fodder crop'],1,'Parthenium (gajar ghas) is a common weed.'],
+['Which cattle breed is known for disease resistance?',['Jersey','Brown Swiss','Sahiwal','Leghorn'],2,'Local breeds like Sahiwal and Red Sindhi resist disease.'],
+['Poultry raised for meat are called…',['Layers','Broilers','Milch','Draught'],1,'Broilers are for meat, layers for eggs.'],
+['In composite fish culture, which is a surface feeder?',['Rohu','Mrigal','Catla','Common carp'],2,'Catla feeds at the surface; Rohu middle; Mrigal and Common carp bottom.'],
+['The Italian bee used for commercial honey is…',['Apis dorsata','Apis mellifera','Apis florae','Apis cerana indica'],1,'A. mellifera collects more honey and stings less.']];
+let qi=0,score=0;
+function drawQ(){const box=$('#quizBox');if(qi>=Q.length){box.innerHTML=`<div class="qprog"><div style="width:100%"></div></div><h3>You scored ${score} / ${Q.length}</h3><p style="margin-top:6px">${score>=10?'Excellent work!':score>=7?'Good. Revise the ones you missed.':'Go through the flashcards and try again.'}</p><div class="qfoot"><span></span><button class="btn primary" id="qRestart">Try again</button></div>`;$('#qRestart').onclick=()=>{qi=0;score=0;drawQ()};return}
+const [q,o]=Q[qi];box.innerHTML=`<div class="qprog"><div style="width:${qi/Q.length*100}%"></div></div><span class="tag">Question ${qi+1} of ${Q.length} · Score ${score}</span><h3 style="margin-top:4px">${q}</h3><div class="opts">${o.map((t,i)=>`<button class="opt" data-i="${i}">${t}</button>`).join('')}</div><p class="why" id="why" aria-live="polite"></p><div class="qfoot"><span></span><button class="btn primary" id="qNext" hidden>Next</button></div>`;
+box.querySelector('.opts').onclick=e=>{const b=e.target.closest('.opt');if(!b||b.disabled)return;const a=Q[qi][2];box.querySelectorAll('.opt').forEach((x,i)=>{x.disabled=true;if(i===a)x.classList.add('ok')});if(+b.dataset.i===a){score++;$('#why').textContent='Correct! '+Q[qi][3]}else{b.classList.add('no');$('#why').textContent='Not quite. '+Q[qi][3]}$('#qNext').hidden=false};
+$('#qNext').onclick=()=>{qi++;drawQ()}}
+drawQ();
+
+/* exercises */
+const ex=[['Explain any one method of crop production which ensures high yield.','<p><b>Inter-cropping:</b> two or more crops grown in a definite row pattern (e.g. soyabean + maize). Crops have different nutrient needs, so nutrients are fully used, and pests or diseases cannot spread to all plants. Both crops give better returns. (Crop rotation or mixed cropping are also valid.)</p>'],
+['Why are manure and fertilizers used in fields?','<p>To supply nutrients and increase soil fertility and yield. Manure adds organic matter, improves soil structure and water-holding. Fertilizers supply N, P, K quickly for good vegetative growth.</p>'],
+['What are the advantages of inter-cropping and crop rotation?','<ul><li>Better use of soil nutrients.</li><li>Prevents spread of pests and diseases.</li><li>Helps weed control.</li><li>Crop rotation gives 2–3 crops a year with good harvests and keeps soil fertile.</li></ul>'],
+['What is genetic manipulation? How is it useful?','<p>Introducing a gene for a desired characteristic into a plant, giving GM crops. Useful for high yield, disease and pest resistance, tolerance to drought or salinity, better quality and shorter maturity.</p>'],
+['How do storage grain losses occur?','<p><b>Biotic:</b> insects, rodents, fungi, mites, bacteria. <b>Abiotic:</b> wrong moisture and temperature. They cause poor quality, weight loss, poor germination and discolouration.</p>'],
+['How do good animal husbandry practices benefit farmers?','<p>Healthy animals give more milk, eggs and meat; cross-breeding improves yield and disease resistance; proper food, shelter and vaccination reduce loss; this raises farmers’ income.</p>'],
+['What are the benefits of cattle farming?','<p>Milk from milch animals, draught labour (tilling, irrigation, carting), dung for manure and fuel, and extra income.</p>'],
+['For increasing production, what is common in poultry, fisheries and bee-keeping?','<p>Improved varieties through cross-breeding or selection, proper management (feeding, shelter, hygiene), and disease control.</p>'],
+['Differentiate capture fishing, mariculture and aquaculture.','<ul><li><b>Capture fishing:</b> catching fish from natural sources.</li><li><b>Mariculture:</b> culture of fish in seawater.</li><li><b>Aquaculture:</b> culture of fish in fresh or brackish inland water.</li></ul>']];
+$('#exList').innerHTML=ex.map(([q,a],i)=>`<details><summary>${i+1}. ${q}</summary>${a}</details>`).join('');
+
+/* nav highlight */
+const links=[...document.querySelectorAll('nav.top a')];
+const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.toggle('on',l.getAttribute('href')==='#'+e.target.id))}}),{rootMargin:'-40% 0px -55% 0px'});
+document.querySelectorAll('main section').forEach(s=>obs.observe(s));
+</script>
+
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Class 9 Science Lessons</title>
+<meta name="description" content="Interactive Class 9 CBSE Science lessons with diagrams, games, flashcards, quizzes and NCERT answers.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Mulish:wght@400;600;700;800&display=swap">
+<style>
+/* Layout: a lesson "notebook" home — big title band, chapter cards with topic chips that deep-link into each lesson */
+:root{
+  --bg:#f7f9f4; --surface:#ffffff; --fg:#1f2a24; --muted:#56655d; --line:#dfe6dd;
+  --leaf:#2b8a4b; --leaf-soft:#e0f2e5;
+  --rose:#c8406a; --rose-soft:#fbe3ea;
+  --wheat:#d38a0c; --wheat-soft:#fcf0d4;
+  --sky:#1c78b8; --sky-soft:#dcecf8;
+  --violet:#6b4fc6; --violet-soft:#ebe6fb;
+  --display:"Baloo 2","Trebuchet MS",system-ui,sans-serif;
+  --body:"Mulish",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#141a17; --surface:#1d2521; --fg:#ecf2ee; --muted:#a3b2aa; --line:#33403a;
+  --leaf:#6fd08e; --leaf-soft:#1f3628; --rose:#f483a6; --rose-soft:#3d1f2a;
+  --wheat:#f2bd45; --wheat-soft:#3a2f14; --sky:#6cbcf0; --sky-soft:#17304a;
+  --violet:#a994f5; --violet-soft:#2a2448; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141a17; --surface:#1d2521; --fg:#ecf2ee; --muted:#a3b2aa; --line:#33403a;
+  --leaf:#6fd08e; --leaf-soft:#1f3628; --rose:#f483a6; --rose-soft:#3d1f2a;
+  --wheat:#f2bd45; --wheat-soft:#3a2f14; --sky:#6cbcf0; --sky-soft:#17304a;
+  --violet:#a994f5; --violet-soft:#2a2448; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.6}
+.wrap{max-width:1040px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--display);line-height:1.12;text-wrap:balance;margin:0}
+p{margin:0}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--sky);outline-offset:3px}
+
+.hero{padding-block:44px 30px;background:
+  radial-gradient(circle at 92% 20%,var(--wheat-soft) 0 90px,transparent 91px),
+  radial-gradient(circle at 80% 85%,var(--leaf-soft) 0 140px,transparent 141px),
+  var(--sky-soft)}
+.chip{display:inline-block;font-size:.78rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--leaf);background:var(--surface);padding:4px 12px;border-radius:99px}
+.hero h1{font-size:clamp(2.4rem,7vw,4.2rem);font-weight:800;margin-block:12px 10px}
+.hero h1 span{color:var(--leaf)}
+.hero p{font-size:1.1rem;color:var(--muted);max-width:60ch}
+.features{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.features span{background:var(--surface);border:2px solid var(--line);border-radius:99px;padding:5px 12px;font-weight:700;font-size:.9rem}
+
+main{padding-block:34px 20px}
+.bar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:18px}
+.bar h2{font-size:1.8rem;font-weight:800}
+.search{font:inherit;padding:10px 14px;border-radius:12px;border:2px solid var(--line);background:var(--surface);color:var(--fg);width:100%;max-width:340px}
+
+.chapters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.ch{background:var(--surface);border:2px solid var(--line);border-radius:22px;overflow:hidden;display:flex;flex-direction:column;min-width:0}
+.ch .art{height:150px;display:block}
+.ch .art svg{width:100%;height:100%;display:block}
+.ch .body{padding:18px 20px 20px;display:flex;flex-direction:column;gap:12px;flex:1}
+.ch .num{font-size:.78rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.ch h3{font-size:1.75rem;font-weight:800}
+.ch p.sum{color:var(--muted)}
+.meta{display:flex;flex-wrap:wrap;gap:6px}
+.meta span{font-size:.8rem;font-weight:800;padding:3px 10px;border-radius:99px;font-variant-numeric:tabular-nums}
+.topics{display:flex;flex-wrap:wrap;gap:6px}
+.topics a{text-decoration:none;font-size:.88rem;font-weight:700;padding:4px 10px;border-radius:10px;border:2px solid var(--line);background:var(--bg)}
+.topics a:hover{border-color:currentColor}
+.topics a.hit{border-color:var(--wheat);background:var(--wheat-soft)}
+.cta{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:6px}
+.btn{text-decoration:none;font-weight:800;border-radius:12px;padding:9px 16px;border:2px solid var(--fg)}
+.btn.primary{color:#fff}
+.ch.food .num{color:var(--wheat)} .ch.food .meta span{background:var(--wheat-soft)} .ch.food .btn.primary{background:var(--leaf);border-color:var(--leaf)} .ch.food .topics a{color:var(--fg)}
+.ch.tis .num{color:var(--rose)} .ch.tis .meta span{background:var(--rose-soft)} .ch.tis .btn.primary{background:var(--rose);border-color:var(--rose)}
+.ch.hide{display:none}
+.empty{display:none;padding:18px;border:2px dashed var(--line);border-radius:16px;font-weight:700;color:var(--muted)}
+
+.how{margin-top:34px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.how div{background:var(--surface);border:2px solid var(--line);border-radius:16px;padding:14px;min-width:0}
+.how b{display:block;font-family:var(--display);font-size:1.15rem}
+.how small{color:var(--muted);font-weight:600;font-size:.92rem}
+.how i{font-style:normal;display:inline-grid;place-items:center;width:30px;height:30px;border-radius:10px;color:#fff;font-weight:800;margin-bottom:6px}
+
+footer{padding-block:24px 34px;color:var(--muted);font-size:.9rem;text-align:center}
+@media (max-width:760px){.chapters{grid-template-columns:1fr}.how{grid-template-columns:1fr 1fr}}
+@media (max-width:420px){.how{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:no-preference){.ch{transition:transform .2s}.ch:hover{transform:translateY(-3px)}}
+</style>
+<style>html,body{margin:0}</style>
+</head>
+<body>
+
+
+<header class="hero">
+  <div class="wrap">
+    <span class="chip">CBSE · NCERT · Class 9</span>
+    <h1>Class 9 <span>Science</span> Lessons</h1>
+    <p>Pick a chapter. Each lesson has colourful diagrams you can tap, small games, keyword flashcards, a quiz and answers to the textbook questions.</p>
+    <div class="features"><span>Tap-to-learn diagrams</span><span>Sorting games</span><span>Flashcards</span><span>Quizzes with scores</span><span>NCERT answers</span><span>Works on phone</span></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="bar">
+    <h2>Chapters</h2>
+    <label for="q" style="position:absolute;left:-9999px">Search topics</label>
+    <input id="q" class="search" type="search" placeholder="Search a topic, e.g. xylem, kharif">
+  </div>
+
+  <div class="chapters" id="chapters">
+    <article class="ch tis" data-k="tissues tissue meristem apical lateral intercalary epidermis cuticle stomata parenchyma collenchyma sclerenchyma xylem phloem epithelial connective blood bone cartilage tendon ligament muscle skeletal smooth cardiac neuron nervous joint ball socket hinge pivot fixed skeleton rib vertebrae totipotency carrot steward">
+      <a class="art" href="chapter-3-tissues-in-action.html" aria-label="Open Chapter 3">
+        <svg viewBox="0 0 400 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <rect width="400" height="150" fill="var(--rose-soft)"/>
+          <g stroke="var(--leaf)" stroke-width="3" fill="var(--leaf-soft)"><rect x="30" y="30" width="44" height="40" rx="6"/><rect x="74" y="30" width="44" height="40" rx="6"/><rect x="30" y="70" width="44" height="40" rx="6"/><rect x="74" y="70" width="44" height="40" rx="6"/></g>
+          <g fill="var(--leaf)"><circle cx="46" cy="46" r="6"/><circle cx="100" cy="54" r="6"/><circle cx="52" cy="92" r="6"/><circle cx="96" cy="88" r="6"/></g>
+          <g stroke="var(--rose)" stroke-width="4" fill="none" stroke-linecap="round"><path d="M220 75 l-26 -26 M220 75 l-32 2 M220 75 l-22 26"/><path d="M240 76 C290 76 300 106 340 106 M340 106 l18 -12 M340 106 l20 4"/></g>
+          <circle cx="228" cy="76" r="17" fill="var(--surface)" stroke="var(--rose)" stroke-width="4"/><circle cx="228" cy="76" r="6" fill="var(--rose)"/>
+        </svg>
+      </a>
+      <div class="body">
+        <span class="num">Chapter 3 · Exploration (2026 edition)</span>
+        <h3>Tissues in Action</h3>
+        <p class="sum">How plant and animal cells team up as tissues: meristems, xylem and phloem, epithelium, blood and bone, muscles, neurons and joints.</p>
+        <div class="meta"><span>14 quiz questions</span><span>42 keywords</span><span>15 exercise answers</span></div>
+        <div class="topics">
+          <a href="chapter-3-tissues-in-action.html#meristem">Meristems</a>
+          <a href="chapter-3-tissues-in-action.html#permanent">Permanent tissues</a>
+          <a href="chapter-3-tissues-in-action.html#conduct">Xylem &amp; phloem</a>
+          <a href="chapter-3-tissues-in-action.html#epithelial">Epithelial</a>
+          <a href="chapter-3-tissues-in-action.html#connective">Connective</a>
+          <a href="chapter-3-tissues-in-action.html#muscle">Muscles</a>
+          <a href="chapter-3-tissues-in-action.html#nerve">Neuron</a>
+          <a href="chapter-3-tissues-in-action.html#joints">Joints</a>
+          <a href="chapter-3-tissues-in-action.html#toti">Totipotency</a>
+        </div>
+        <div class="cta"><a class="btn primary" href="chapter-3-tissues-in-action.html">Start lesson</a><a class="btn" href="chapter-3-tissues-in-action.html#quiz">Take the quiz</a></div>
+      </div>
+    </article>
+
+    <article class="ch food" data-k="food resources improvement crop kharif rabi hybridisation gm variety nutrients macro micro manure fertilizer compost vermicompost green organic irrigation canal well tank mixed intercropping rotation weeds pests storage animal husbandry cattle dairy poultry layers broilers fish capture mariculture aquaculture composite bee apiary honey">
+      <a class="art" href="chapter-15-improvement-in-food-resources.html" aria-label="Open Chapter 15">
+        <svg viewBox="0 0 400 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <rect width="400" height="150" fill="var(--sky-soft)"/>
+          <circle cx="340" cy="38" r="22" fill="var(--wheat)"/>
+          <path d="M0 95 Q100 65 200 90 T400 85 V150 H0Z" fill="var(--leaf)" opacity=".85"/>
+          <path d="M0 120 Q120 100 260 118 T400 115 V150 H0Z" fill="var(--wheat)" opacity=".8"/>
+          <g stroke="var(--wheat)" stroke-width="3" stroke-linecap="round"><path d="M40 118v-26M60 116v-30M80 115v-26M100 115v-30"/></g>
+          <g fill="var(--wheat)"><ellipse cx="40" cy="90" rx="4" ry="8"/><ellipse cx="60" cy="84" rx="4" ry="8"/><ellipse cx="80" cy="88" rx="4" ry="8"/><ellipse cx="100" cy="84" rx="4" ry="8"/></g>
+          <ellipse cx="300" cy="132" rx="70" ry="14" fill="var(--sky)"/>
+        </svg>
+      </a>
+      <div class="body">
+        <span class="num">Chapter 15 · NCERT</span>
+        <h3>Improvement in Food Resources</h3>
+        <p class="sum">Growing more food from the same land: crop varieties, nutrients and manure, irrigation, cropping patterns, crop protection, cattle, poultry, fish and bees.</p>
+        <div class="meta"><span>12 quiz questions</span><span>38 keywords</span><span>9 exercise answers</span></div>
+        <div class="topics">
+          <a href="chapter-15-improvement-in-food-resources.html#variety">Kharif &amp; rabi</a>
+          <a href="chapter-15-improvement-in-food-resources.html#nutrients">Nutrients</a>
+          <a href="chapter-15-improvement-in-food-resources.html#manure">Manure &amp; fertilizer</a>
+          <a href="chapter-15-improvement-in-food-resources.html#irrigation">Irrigation</a>
+          <a href="chapter-15-improvement-in-food-resources.html#patterns">Cropping patterns</a>
+          <a href="chapter-15-improvement-in-food-resources.html#protect">Protection</a>
+          <a href="chapter-15-improvement-in-food-resources.html#cattle">Cattle &amp; poultry</a>
+          <a href="chapter-15-improvement-in-food-resources.html#fish">Fish</a>
+          <a href="chapter-15-improvement-in-food-resources.html#bees">Bees</a>
+        </div>
+        <div class="cta"><a class="btn primary" href="chapter-15-improvement-in-food-resources.html">Start lesson</a><a class="btn" href="chapter-15-improvement-in-food-resources.html#quiz">Take the quiz</a></div>
+      </div>
+    </article>
+  </div>
+  <p class="empty" id="empty">No chapter matches that word. Try a shorter word, like "root" or "fish".</p>
+
+  <h2 style="font-size:1.8rem;font-weight:800;margin-top:40px">How to study with these lessons</h2>
+  <div class="how">
+    <div><i style="background:var(--sky)">1</i><b>Read</b><small>Go through each section with your book open.</small></div>
+    <div><i style="background:var(--leaf)">2</i><b>Tap</b><small>Tap diagrams and play the games to check you understand.</small></div>
+    <div><i style="background:var(--violet)">3</i><b>Revise</b><small>Say each keyword's meaning aloud, then flip the card.</small></div>
+    <div><i style="background:var(--rose)">4</i><b>Test</b><small>Take the quiz. Score less than 8? Revise and try again.</small></div>
+  </div>
+</main>
+
+<footer class="wrap">Made for Class 9 CBSE Science students. Always check answers with your NCERT textbook.</footer>
+
+<script>
+const q=document.getElementById('q'),cards=[...document.querySelectorAll('.ch')],empty=document.getElementById('empty');
+q.addEventListener('input',()=>{const v=q.value.trim().toLowerCase();let shown=0;
+cards.forEach(c=>{const text=(c.dataset.k+' '+c.textContent).toLowerCase();const m=!v||text.includes(v);c.classList.toggle('hide',!m);if(m)shown++;
+c.querySelectorAll('.topics a').forEach(a=>a.classList.toggle('hit',!!v&&a.textContent.toLowerCase().includes(v)))});
+empty.style.display=shown?'none':'block'});
+</script>
+
+</body>
+</html>
